@@ -3,212 +3,52 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ponasa | Real Estate Investments & Management</title>
-    <meta name="description" content="Ponasa is a real estate investments, property management, and brokerage company with offices in Colombia, Italy, and the United States.">
+    <title>Ponasa | Real Estate</title>
+    <meta name="description" content="Ponasa owns, manages, and invests in real estate across Colombia, Italy, and the United States.">
     <link rel="icon" href="assets/ponasa-logo.png">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#home" aria-label="Ponasa home">
-        <img src="assets/ponasa-logo.png" alt="Ponasa Real Estate Investments & Management">
-      </a>
-
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span class="sr-only">Menu</span>
-      </button>
-
+      <a class="brand" href="index.html" aria-label="Ponasa home"><img src="assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-        <a href="#home">Home</a>
-        <div class="nav-dropdown">
-          <button type="button" aria-expanded="false">Services</button>
-          <div class="dropdown-panel">
-            <a href="#services">Investments</a>
-            <a href="#services">Property Management</a>
-            <a href="#services">Brokerage</a>
-            <a href="#services">Rental Strategy</a>
-          </div>
-        </div>
-        <div class="nav-dropdown">
-          <button type="button" aria-expanded="false">Portfolio</button>
-          <div class="dropdown-panel">
-            <a href="#portfolio">Rental Units</a>
-            <a href="#portfolio">Commercial Assets</a>
-            <a href="#portfolio">Development Opportunities</a>
-          </div>
-        </div>
-        <div class="nav-dropdown">
-          <button type="button" aria-expanded="false">Company</button>
-          <div class="dropdown-panel">
-            <a href="#about">About Ponasa</a>
-            <a href="#approach">Our Approach</a>
-            <a href="#locations">Office Locations</a>
-          </div>
-        </div>
-        <a href="#contact">Contact</a>
+        <a href="index.html">Home</a><a href="focus.html">Focus</a><a href="portfolio.html">Portfolio</a>
+        <div class="nav-dropdown"><button type="button" aria-expanded="false">Company</button><div class="dropdown-panel"><a href="company.html">About Ponasa</a><a href="locations.html">Office Locations</a></div></div>
+        <a href="contact.html">Contact</a>
       </nav>
     </header>
-
-    <main id="home">
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Real Estate Investments & Management</p>
-          <h1>Steady real estate growth built around quality assets and rental income.</h1>
-          <p>Ponasa invests in, manages, and brokers real estate across residential, commercial, and hospitality opportunities with direct offices in Colombia, Italy, and the United States.</p>
-          <div class="hero-actions">
-            <a class="button primary" href="#contact">Talk With Ponasa</a>
-            <a class="button secondary" href="#portfolio">View Focus Areas</a>
-          </div>
-        </div>
-        <div class="hero-image" role="img" aria-label="Modern residential property with clean architecture"></div>
+    <main>
+      <section class="hero hero-home">
+        <div class="hero-copy"><p class="eyebrow">Ponasa</p><h1>Real estate, kept simple.</h1><p>We own, manage, and invest in properties with a long view and a practical approach.</p><div class="hero-actions"><a class="button primary" href="portfolio.html">View our portfolio</a><a class="button secondary" href="contact.html">Contact Ponasa</a></div></div>
+        <div class="hero-media" role="img" aria-label="Modern home with warm exterior lighting"></div>
       </section>
 
-      <section class="trust-band" aria-label="Company highlights">
-        <div>
-          <strong>Since 2004</strong>
-          <span>Real estate investment experience</span>
-        </div>
-        <div>
-          <strong>3 offices</strong>
-          <span>Colombia, Italy, and the United States</span>
-        </div>
-        <div>
-          <strong>Rental focus</strong>
-          <span>Long-term income strategy</span>
-        </div>
+      <section class="market-strip" aria-label="Market watch">
+        <div class="market-label"><span class="live-dot"></span><strong>Market watch</strong><small>Reference only</small></div>
+        <div class="market-window"><div class="market-track" id="market-track">
+          <div class="market-item"><strong>JPM</strong><span data-symbol="JPM">Loading</span><em data-change="JPM">--</em></div><div class="market-item"><strong>BAC</strong><span data-symbol="BAC">Loading</span><em data-change="BAC">--</em></div><div class="market-item"><strong>GS</strong><span data-symbol="GS">Loading</span><em data-change="GS">--</em></div><div class="market-item"><strong>C</strong><span data-symbol="C">Loading</span><em data-change="C">--</em></div><div class="market-item"><strong>SPY</strong><span data-symbol="SPY">Loading</span><em data-change="SPY">--</em></div>
+        </div></div>
+        <button class="ticker-control" type="button" aria-label="Pause market ticker" aria-pressed="false">||</button>
       </section>
 
-      <section class="section split" id="services">
-        <div class="section-copy">
-          <p class="eyebrow">Services</p>
-          <h2>Focused real estate support for owners, investors, and partners.</h2>
-          <p>Ponasa keeps the business centered on fundamentals: good locations, durable tenant demand, disciplined acquisitions, and professional management.</p>
-        </div>
-        <div class="service-grid">
-          <article>
-            <span>01</span>
-            <h3>Real Estate Investments</h3>
-            <p>Acquisition and evaluation of opportunities with an emphasis on timing, income potential, and long-term value.</p>
-          </article>
-          <article>
-            <span>02</span>
-            <h3>Property Management</h3>
-            <p>Hands-on management for residential and commercial assets so properties stay maintained, occupied, and competitive.</p>
-          </article>
-          <article>
-            <span>03</span>
-            <h3>Brokerage</h3>
-            <p>Negotiation and transaction support for real estate deals shaped by market conditions and client objectives.</p>
-          </article>
-          <article>
-            <span>04</span>
-            <h3>Rental Strategy</h3>
-            <p>Prioritizing rental capability to create steady cash flow and support the next investment opportunity.</p>
-          </article>
-        </div>
+      <section class="section section-intro"><div class="section-heading"><p class="eyebrow">What we focus on</p><h2>Good properties. Clear decisions.</h2></div><div class="simple-grid">
+        <article><span class="number">01</span><h3>Ownership</h3><p>Properties selected for location, use, and lasting demand.</p><a class="text-link" href="focus.html">See our focus <span aria-hidden="true">-></span></a></article>
+        <article><span class="number">02</span><h3>Management</h3><p>Careful day-to-day attention for tenants, buildings, and partners.</p><a class="text-link" href="focus.html">See our focus <span aria-hidden="true">-></span></a></article>
+        <article><span class="number">03</span><h3>Growth</h3><p>Measured expansion supported by the performance of the portfolio.</p><a class="text-link" href="focus.html">See our focus <span aria-hidden="true">-></span></a></article>
+      </div></section>
+
+      <section class="feature-split"><div class="feature-image" role="img" aria-label="Apartment building exterior"></div><div class="feature-content"><p class="eyebrow">Portfolio focus</p><h2>Residential, commercial, and hospitality properties.</h2><p>Our portfolio includes rental units, warehouses, furnished apartments, resort opportunities, and pre-construction properties.</p><a class="text-link" href="portfolio.html">Explore the portfolio <span aria-hidden="true">-></span></a></div></section>
+
+      <section class="media-section"><div class="section-heading section-heading-row"><div><p class="eyebrow">In view</p><h2>Places worth paying attention to.</h2></div><div class="carousel-controls" aria-label="Video controls"><button class="carousel-button" type="button" data-video-prev aria-label="Previous video">&#8592;</button><span id="video-count">01 / 03</span><button class="carousel-button" type="button" data-video-next aria-label="Next video">&#8594;</button></div></div>
+        <div class="video-carousel" data-video-carousel><article class="video-slide is-active" data-slide="0"><video playsinline muted loop preload="metadata"><source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260624_210218_173f8eba-17ff-4e27-972b-d128af25bf49.mp4" type="video/mp4"></video><div class="video-caption"><span>01</span><strong>Property in motion</strong></div></article><article class="video-slide" data-slide="1"><video playsinline muted loop preload="metadata"><source src="https://stream.mux.com/T6oQJQ02cQ6N01TR6iHwZkKFkbepS34dkkIc9iukgy400g.m3u8" type="application/x-mpegURL"></video><div class="video-caption"><span>02</span><strong>A closer look</strong></div></article><article class="video-slide" data-slide="2"><video playsinline muted loop preload="metadata"><source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260808_064556_051587f1-74a1-4336-8c05-4dde3594ed05.mp4" type="video/mp4"></video><div class="video-caption"><span>03</span><strong>Designed to last</strong></div></article></div>
       </section>
 
-      <section class="image-feature" id="portfolio">
-        <div class="feature-image one" role="img" aria-label="Contemporary apartment building exterior"></div>
-        <div class="feature-content">
-          <p class="eyebrow">Portfolio Focus</p>
-          <h2>Diverse properties with practical income potential.</h2>
-          <p>Ponasa's experience includes low-income rental units, warehouse rental units, resort and condo-hotel opportunities, short-term furnished apartments, luxury rentals, and pre-construction units.</p>
-          <ul class="check-list">
-            <li>Residential rentals in South Florida</li>
-            <li>Commercial and warehouse income assets</li>
-            <li>Short-term rental opportunities in destination markets</li>
-            <li>Pre-construction and development-oriented investments</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="section approach" id="approach">
-        <div>
-          <p class="eyebrow">Approach</p>
-          <h2>Patient, direct, and built for repeatable decisions.</h2>
-        </div>
-        <div class="approach-grid">
-          <article>
-            <h3>Buy With Discipline</h3>
-            <p>Ponasa evaluates opportunities through location, timing, operating cost, and rental demand instead of chasing short-term noise.</p>
-          </article>
-          <article>
-            <h3>Manage With Care</h3>
-            <p>The company emphasizes safe, quality properties, open communication, and reliable upkeep for tenants and clients.</p>
-          </article>
-          <article>
-            <h3>Grow Through Cash Flow</h3>
-            <p>The goal is steady expansion financed by property performance, allowing growth to remain measured and sustainable.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="about-band" id="about">
-        <div class="about-card">
-          <p class="eyebrow">About Ponasa</p>
-          <h2>A real estate company shaped by market cycles and practical ownership experience.</h2>
-          <p>Ponasa was formed in 2004 with a focus on Southeast Florida real estate. After the 2008 downturn, the company used its experience and resources to acquire properties through a disciplined process, building a diversified portfolio that still supports its position today.</p>
-          <p>As the company expanded, Ponasa developed activity in Colombia and Italy, pairing local market knowledge with a rental-first investment philosophy.</p>
-        </div>
-        <div class="about-image" role="img" aria-label="Professional real estate team reviewing plans"></div>
-      </section>
-
-      <section class="section locations" id="locations">
-        <div class="section-copy">
-          <p class="eyebrow">Locations</p>
-          <h2>Direct offices for direct conversations.</h2>
-          <p>Reach Ponasa through the office closest to your property, investment, or opportunity.</p>
-        </div>
-        <div class="location-grid">
-          <article>
-            <h3>PONASA LLC</h3>
-            <p>4530 NE 6th Avenue<br>Oakland Park, FL 33334 USA</p>
-            <a href="tel:+19546006579">+1 (954) 600-6579</a>
-          </article>
-          <article>
-            <h3>PONASA SAS</h3>
-            <p>Cll 91 No 49C-46 Suite 1007<br>Barranquilla, Atlantico, Colombia</p>
-            <a href="tel:+573135844278">+57 (313) 584-4278</a>
-          </article>
-          <article>
-            <h3>PONASA SRL</h3>
-            <p>Via Norvegia 18<br>50126 Firenze, Toscana, Italia</p>
-            <a href="tel:+393356894282">+39 (335) 689-4282</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="contact-section" id="contact">
-        <div>
-          <p class="eyebrow">Contact</p>
-          <h2>Ready to discuss a property or investment opportunity?</h2>
-          <p>Send a note to Ponasa and the right office will follow up with you.</p>
-        </div>
-        <div class="contact-actions">
-          <a class="button primary" href="mailto:info@ponasa.com">info@ponasa.com</a>
-          <a class="button secondary" href="tel:+19546006579">Call U.S. Office</a>
-        </div>
-      </section>
+      <section class="about-preview"><div><p class="eyebrow">About Ponasa</p><h2>Built through ownership experience.</h2><p>Ponasa began in 2004 in Southeast Florida and has grown across three markets through patient, direct property decisions.</p><a class="text-link light" href="company.html">Meet the company <span aria-hidden="true">-></span></a></div><div class="about-preview-image" role="img" aria-label="People reviewing architectural plans"></div></section>
+      <section class="section locations-preview"><div class="section-heading"><p class="eyebrow">Where we are</p><h2>Three offices. One direct line of work.</h2></div><div class="location-mini-grid"><a href="locations.html"><strong>Florida</strong><span>United States</span><span>Oakland Park</span></a><a href="locations.html"><strong>Atlantico</strong><span>Colombia</span><span>Barranquilla</span></a><a href="locations.html"><strong>Toscana</strong><span>Italy</span><span>Florence</span></a></div></section>
+      <section class="contact-strip"><div><p class="eyebrow">Start a conversation</p><h2>Have a property or opportunity to discuss?</h2></div><a class="button primary" href="contact.html">Get in touch <span aria-hidden="true">-></span></a></section>
     </main>
-
-    <footer class="site-footer">
-      <div>
-        <img src="assets/ponasa-logo.png" alt="Ponasa">
-        <p>Real estate investments, property management, and brokerage.</p>
-      </div>
-      <nav aria-label="Footer navigation">
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Use</a>
-        <a href="accessibility.html">Accessibility</a>
-        <a href="mailto:info@ponasa.com">Contact</a>
-      </nav>
-      <p class="footer-note">Copyright &copy; 2026 Ponasa. Legal pages are starter informational copy and should be reviewed by qualified counsel.</p>
-    </footer>
-
+    <footer class="site-footer"><div class="footer-main"><div class="footer-brand"><img src="assets/ponasa-logo.png" alt="Ponasa"><p>Real estate investments, property management, and ownership across three markets.</p><a href="mailto:info@ponasa.com">info@ponasa.com</a></div><div class="footer-column"><h3>Explore</h3><a href="focus.html">Focus</a><a href="portfolio.html">Portfolio</a><a href="company.html">Company</a><a href="locations.html">Locations</a></div><div class="footer-column"><h3>Connect</h3><a href="contact.html">Contact</a><a href="tel:+19546006579">U.S. office</a><a href="tel:+573135844278">Colombia office</a><a href="tel:+393356894282">Italy office</a></div><div class="footer-column"><h3>Legal</h3><a href="privacy-policy.html">Privacy policy</a><a href="terms.html">Terms of use</a><a href="accessibility.html">Accessibility</a><a href="404.html">Site map</a></div></div><div class="footer-bottom"><span>Copyright &copy; 2026 Ponasa</span><span>Informational website. Legal copy should be reviewed by qualified counsel.</span></div></footer>
     <script src="script.js"></script>
   </body>
 </html>
