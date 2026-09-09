@@ -80,15 +80,15 @@ const formatMarket = (value, change) => {
   return { price: Number.isFinite(price) ? `$${price.toFixed(2)}` : "--", change: Number.isFinite(delta) ? `${delta >= 0 ? "+" : ""}${delta.toFixed(2)}%` : "--", down: Number.isFinite(delta) && delta < 0 };
 };
 
-const renderMarketTicker = (quotes = {}) => {
+const renderMarketTicker = (quotes = {}, unavailable = false) => {
   if (!tickerTrack) return;
   const pricedMarkets = marketSymbols.filter((market) => Number.isFinite(Number(quotes[market.symbol]?.price)));
   const visibleMarkets = pricedMarkets.length ? pricedMarkets : marketSymbols;
   const repeatCount = Math.max(6, Math.ceil(24 / visibleMarkets.length));
   const items = visibleMarkets.map((market) => {
     const quote = formatMarket(quotes[market.symbol]?.price, quotes[market.symbol]?.change);
-    const detail = quote.price === "--" ? "Loading price" : quote.price;
-    const movement = quote.change === "--" ? "Updating" : quote.change;
+    const detail = quote.price === "--" ? (unavailable ? "Quote delayed" : "Loading price") : quote.price;
+    const movement = quote.change === "--" ? (unavailable ? "Refresh later" : "Updating") : quote.change;
     return `<a class="market-item" href="${financeUrl(market)}" target="_blank" rel="noopener" aria-label="${market.name} stock price on Google Finance"><strong>${market.symbol}</strong><span>${detail}</span><em class="${quote.down ? "down" : ""}">${movement}</em></a>`;
   });
   tickerTrack.innerHTML = Array.from({ length: repeatCount }, () => items).flat().join("");
@@ -97,36 +97,54 @@ const renderMarketTicker = (quotes = {}) => {
 const loadMarketData = async () => {
   renderMarketTicker();
   const liveSymbols = marketSymbols.map((market) => market.symbol);
-  try {
-    const response = await fetch(`/api/market?symbols=${liveSymbols.join(",")}`);
-    if (!response.ok) throw new Error("Market data unavailable");
-    const data = await response.json();
-    renderMarketTicker(data);
-  } catch { renderMarketTicker(); }
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      const response = await fetch(`/api/market?symbols=${liveSymbols.join(",")}`);
+      if (!response.ok) throw new Error("Market data unavailable");
+      const payload = await response.json();
+      const quotes = payload.quotes ?? payload;
+      renderMarketTicker(quotes, Boolean(payload.unavailable));
+      if (!payload.refreshing) return;
+    } catch { renderMarketTicker({}, true); return; }
+    await new Promise((resolve) => setTimeout(resolve, 1600));
+  }
 };
 if (tickerTrack) loadMarketData();
 
-const slides = [...document.querySelectorAll(".video-slide")];
-const videoCount = document.querySelector("#video-count");
-let activeSlide = 0;
-const showSlide = (index) => {
-  if (!slides.length) return;
-  activeSlide = (index + slides.length) % slides.length;
-  slides.forEach((slide, slideIndex) => {
-    const isActive = slideIndex === activeSlide;
-    slide.classList.toggle("is-active", isActive);
-    const video = slide.querySelector("video");
-    if (isActive) video?.play().catch(() => {});
-    else { video?.pause(); if (video) video.currentTime = 0; }
-  });
-  if (videoCount) videoCount.textContent = `${String(activeSlide + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
-};
-document.querySelector("[data-video-prev]")?.addEventListener("click", () => showSlide(activeSlide - 1));
-document.querySelector("[data-video-next]")?.addEventListener("click", () => showSlide(activeSlide + 1));
-slides.forEach((slide) => {
-  slide.querySelector("video")?.addEventListener("ended", () => showSlide(activeSlide + 1));
+document.querySelectorAll("[data-carousel], [data-video-carousel]").forEach((carousel) => {
+  const slides = [...carousel.querySelectorAll(".development-slide, .video-slide")];
+  const section = carousel.closest("section") ?? document;
+  const count = section.querySelector("#development-count, #portfolio-count, #video-count");
+  const previous = section.querySelector("[data-carousel-prev], [data-video-prev]");
+  const next = section.querySelector("[data-carousel-next], [data-video-next]");
+  let activeSlide = 0;
+  let autoAdvance;
+  const showSlide = (index) => {
+    if (!slides.length) return;
+    activeSlide = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const isActive = slideIndex === activeSlide;
+      slide.classList.toggle("is-active", isActive);
+      const video = slide.querySelector("video");
+      if (isActive) video?.play().catch(() => {});
+      else { video?.pause(); if (video) video.currentTime = 0; }
+    });
+    if (count) count.textContent = `${String(activeSlide + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+  };
+  const restartAutoAdvance = () => {
+    if (autoAdvance) window.clearInterval(autoAdvance);
+    if (!carousel.querySelector("video") && slides.length > 1) autoAdvance = window.setInterval(() => showSlide(activeSlide + 1), 6500);
+  };
+  previous?.addEventListener("click", () => { showSlide(activeSlide - 1); restartAutoAdvance(); });
+  next?.addEventListener("click", () => { showSlide(activeSlide + 1); restartAutoAdvance(); });
+  slides.forEach((slide) => slide.querySelector("video")?.addEventListener("ended", () => showSlide(activeSlide + 1)));
+  carousel.addEventListener("mouseenter", () => { if (autoAdvance) window.clearInterval(autoAdvance); });
+  carousel.addEventListener("mouseleave", restartAutoAdvance);
+  carousel.addEventListener("focusin", () => { if (autoAdvance) window.clearInterval(autoAdvance); });
+  carousel.addEventListener("focusout", restartAutoAdvance);
+  showSlide(0);
+  restartAutoAdvance();
 });
-showSlide(0);
 
 const propertyGrid = document.querySelector("#property-grid");
 const propertySearch = document.querySelector("#property-search");
@@ -138,14 +156,20 @@ const tenantGrid = document.querySelector("#tenant-grid");
 const tenantCount = document.querySelector("#tenant-count");
 const portfolioDirectory = document.querySelector("[data-portfolio-directory]");
 const portfolioButtons = document.querySelectorAll("[data-portfolio-category]");
-let activePortfolioCategory = "";
+const portfolioFeatureButtons = document.querySelectorAll("[data-portfolio-feature]");
+const portfolioFeatureTitle = document.querySelector("#portfolio-feature-title");
+const portfolioFeatureKicker = document.querySelector("#portfolio-feature-kicker");
+const portfolioFeatureCopy = document.querySelector("#portfolio-feature-copy");
+const portfolioFeatureLink = document.querySelector("#portfolio-feature-link");
+const portfolioFeatureGallery = document.querySelector("#portfolio-feature-gallery");
+let activePortfolioCategory = propertyGrid ? "residential" : "";
 
 const escapePropertyHtml = (value) => String(value).replace(/[&<>\"']/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;",
 }[character]));
 const zillowSlug = (address) => address.replace(/[#,\.]/g, "").replace(/\s+/g, "-");
 const zillowSearchUrl = (address) => `https://www.zillow.com/homes/${zillowSlug(address)}_rb/`;
-const propertyDetailUrl = (property) => `/property?folio=${encodeURIComponent(property.folio)}`;
+const propertyDetailUrl = (property) => `/property/${encodeURIComponent(property.folio)}`;
 const folioPlain = (property) => property.folio.replace(/-/g, "");
 const bcpaRecordUrl = (property) => `https://web.bcpa.net/bcpaclient/#/Record-Search?folio=${encodeURIComponent(folioPlain(property))}`;
 const bcpaMapUrl = (property) => `https://gisweb-adapters.bcpa.net/bcpawebmap_ex_new/bcpawebmap.aspx?FOLIO=${encodeURIComponent(folioPlain(property))}`;
@@ -160,19 +184,84 @@ const propertyCategory = (property) => property.category ?? "residential";
 const propertyMedia = (property) => window.PONASA_EXTERIOR_MEDIA?.[property.folio];
 const propertyZillowMedia = (property) => window.PONASA_VERIFIED_MEDIA?.[property.folio];
 const propertyZillowUrl = (property) => propertyZillowMedia(property)?.zillowUrl ?? zillowSearchUrl(property.address);
+const portfolioFeatures = {
+  hospitality: {
+    kicker: "Hospitality",
+    title: "Beach House Fort Lauderdale.",
+    copy: "Hilton resort hospitality property imagery supplied for the portfolio.",
+    link: "https://www.google.com/maps/place/Beach+House+Fort+Lauderdale,+a+Hilton+Resort/",
+    images: ["/assets/hilton-beach-house-1.webp", "/assets/hilton-beach-house-2.webp", "/assets/hilton-beach-house-3.png"],
+  },
+  commercial: {
+    kicker: "Commercial",
+    title: "4530 NE 6th Ave #4540.",
+    copy: "Active industrial listing in Oakland Park: 2,000 square feet, built in 1973, listed at $4,150 per month.",
+    link: "https://www.mcgadvisors.com/property-search/detail/33/A12015204/4530-ne-6th-ave-oakland-park-fl-33334/?src=2",
+    images: [
+      "https://cdn.listingphotos.sierrastatic.com/large/v1786526591/33/33_A12015204_01.jpg",
+      "https://cdn.listingphotos.sierrastatic.com/large/v1786526589/33/33_A12015204_03.jpg",
+      "https://cdn.listingphotos.sierrastatic.com/large/v1786526588/33/33_A12015204_04.jpg",
+      "https://cdn.listingphotos.sierrastatic.com/large/v1786526592/33/33_A12015204_05.jpg",
+      "https://cdn.listingphotos.sierrastatic.com/large/v1786526593/33/33_A12015204_06.jpg",
+    ],
+  },
+};
+
+const propertyMapCenters = {
+  "DEERFIELD BEACH": [26.3184, -80.0998],
+  "POMPANO BEACH": [26.2379, -80.1248],
+  "TAMARAC": [26.2129, -80.2498],
+  "NORTH LAUDERDALE": [26.2173, -80.2259],
+  "LAUDERDALE LAKES": [26.1662, -80.2084],
+  "SUNRISE": [26.1669, -80.2566],
+  "LAUDERHILL": [26.1404, -80.2137],
+  "FORT LAUDERDALE": [26.1224, -80.1373],
+  "HOLLYWOOD": [26.0112, -80.1495],
+  "OAKLAND PARK": [26.1723, -80.1310],
+  "UNINCORPORATED": [26.1500, -80.2000],
+};
+const propertyHash = (value) => [...String(value)].reduce((total, character) => ((total * 31) + character.charCodeAt(0)) >>> 0, 7);
+const propertyMapPoint = (property, index) => {
+  const savedPoint = window.PONASA_PROPERTY_COORDINATES?.[property.folio];
+  if (Array.isArray(savedPoint) && savedPoint.length === 2) return savedPoint;
+  if (Array.isArray(property.coordinates) && property.coordinates.length === 2) return property.coordinates;
+  const city = propertyCity(property);
+  const center = propertyMapCenters[city] ?? propertyMapCenters["UNINCORPORATED"];
+  const hash = propertyHash(property.folio);
+  const latOffset = (((hash % 17) - 8) / 1000) + ((index % 3) - 1) / 1800;
+  const lonOffset = ((((Math.floor(hash / 17)) % 17) - 8) / 1000) + ((index % 4) - 1.5) / 1800;
+  return [center[0] + latOffset, center[1] + lonOffset];
+};
+
+const renderPropertyMap = () => {
+  const mapElement = document.querySelector("#property-map");
+  if (!mapElement || !Array.isArray(window.PONASA_PROPERTIES) || !window.L) return;
+  const map = window.L.map(mapElement, { scrollWheelZoom: false });
+  window.L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>',
+  }).addTo(map);
+  const bounds = [];
+  const marker = window.L.divIcon({ className: "property-marker", html: "<span></span>", iconSize: [18, 18], iconAnchor: [9, 9] });
+  window.PONASA_PROPERTIES.forEach((property, index) => {
+    const point = propertyMapPoint(property, index);
+    bounds.push(point);
+    const detailUrl = propertyDetailUrl(property);
+    const address = propertyLabel(property);
+    window.L.marker(point, { icon: marker, title: address })
+      .addTo(map)
+      .bindPopup(`<div class="map-popup"><strong>${escapePropertyHtml(address)}</strong><span>Folio ${escapePropertyHtml(property.folio)}</span><a href="${escapePropertyHtml(detailUrl)}">Open property profile <span aria-hidden="true">→</span></a></div>`);
+  });
+  if (bounds.length) map.fitBounds(bounds, { padding: [24, 24] });
+};
 
 const renderPropertyDirectory = () => {
   if (!propertyGrid || !Array.isArray(window.PONASA_PROPERTIES)) return;
-  if (portfolioDirectory) portfolioDirectory.hidden = !activePortfolioCategory;
-  if (!activePortfolioCategory) {
-    propertyGrid.innerHTML = "";
-    if (propertyResults) propertyResults.textContent = "Choose a property type";
-    return;
-  }
+  if (portfolioDirectory) portfolioDirectory.hidden = false;
   const query = (propertySearch?.value ?? "").trim().toLowerCase();
   const selectedZip = propertyZip?.value ?? "";
   const visibleProperties = window.PONASA_PROPERTIES.filter((property) => {
-    const matchesCategory = propertyCategory(property) === activePortfolioCategory;
+    const matchesCategory = !activePortfolioCategory || propertyCategory(property) === activePortfolioCategory;
     const matchesQuery = !query || `${property.address} ${property.folio}`.toLowerCase().includes(query);
     const matchesZip = !selectedZip || propertyZipCode(property) === selectedZip;
     return matchesCategory && matchesQuery && matchesZip;
@@ -214,10 +303,36 @@ const renderTenantDirectory = () => {
 };
 renderTenantDirectory();
 
+const renderPortfolioFeature = (featureKey = "hospitality") => {
+  if (!portfolioFeatureGallery) return;
+  const feature = portfolioFeatures[featureKey] ?? portfolioFeatures.hospitality;
+  if (portfolioFeatureKicker) portfolioFeatureKicker.textContent = feature.kicker;
+  if (portfolioFeatureTitle) portfolioFeatureTitle.textContent = feature.title;
+  if (portfolioFeatureCopy) portfolioFeatureCopy.textContent = feature.copy;
+  if (portfolioFeatureLink) portfolioFeatureLink.href = feature.link;
+  portfolioFeatureGallery.innerHTML = feature.images.map((image, index) => `<a href="${escapePropertyHtml(feature.link)}" target="_blank" rel="noopener"><img src="${escapePropertyHtml(image)}" alt="${escapePropertyHtml(feature.title)} image ${index + 1}" loading="lazy"></a>`).join("");
+};
+
+portfolioFeatureButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const featureKey = button.dataset.portfolioFeature ?? "hospitality";
+    portfolioFeatureButtons.forEach((item) => item.classList.toggle("active", item === button));
+    renderPortfolioFeature(featureKey);
+    document.querySelector(".portfolio-feature-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+renderPortfolioFeature();
+
 const renderPropertyProfile = () => {
   if (!propertyProfile || !Array.isArray(window.PONASA_PROPERTIES)) return;
-  const folio = new URLSearchParams(window.location.search).get("folio");
-  const property = window.PONASA_PROPERTIES.find((item) => item.folio === folio) ?? window.PONASA_PROPERTIES[0];
+  const folioFromPath = decodeURIComponent(window.location.pathname.match(/^\/property\/([^/]+)\/?$/)?.[1] ?? "");
+  const folio = folioFromPath || new URLSearchParams(window.location.search).get("folio");
+  const property = window.PONASA_PROPERTIES.find((item) => item.folio === folio);
+  if (!property) {
+    document.title = "Property not found | Ponasa";
+    propertyProfile.innerHTML = '<a class="property-back-link" href="/portfolio">Back to property map</a><div class="empty-state"><p class="eyebrow">Property</p><h1>Property not found.</h1><p>The requested property profile is not available.</p></div>';
+    return;
+  }
   const media = propertyMedia(property);
   const zillowMedia = propertyZillowMedia(property);
   const zillowUrl = propertyZillowUrl(property);
@@ -234,8 +349,17 @@ const renderPropertyProfile = () => {
     : "";
 
   document.title = `${propertyStreet(property)} | Ponasa`;
+  const description = `Ponasa LLC property profile for ${propertyLabel(property)}, folio ${property.folio}.`;
+  document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.setAttribute("rel", "canonical");
+    document.head.append(canonical);
+  }
+  canonical.setAttribute("href", `https://ponasa.com${propertyDetailUrl(property)}`);
   propertyProfile.innerHTML = `
-    <a class="property-back-link" href="/portfolio">Back to portfolio</a>
+    <a class="property-back-link" href="/tenants">Back to rental properties</a>
     <div class="property-profile-hero">
       <div class="property-profile-media">
         ${media?.imageUrl ? `<img src="${escapePropertyHtml(media.imageUrl)}" alt="Exterior of ${escapePropertyHtml(propertyLabel(property))}">` : ""}
@@ -259,3 +383,10 @@ const renderPropertyProfile = () => {
 };
 
 renderPropertyProfile();
+
+const propertySitemapList = document.querySelector("#property-sitemap-list");
+if (propertySitemapList && Array.isArray(window.PONASA_PROPERTIES)) {
+  propertySitemapList.innerHTML = window.PONASA_PROPERTIES.map((property) => `<li><a href="${escapePropertyHtml(propertyDetailUrl(property))}">${escapePropertyHtml(propertyLabel(property))}</a><span>Folio ${escapePropertyHtml(property.folio)}</span></li>`).join("");
+}
+
+renderPropertyMap();
