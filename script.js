@@ -65,11 +65,6 @@ const marketSymbols = [
   { symbol: "WFC", name: "Wells Fargo", exchange: "NYSE" },
   { symbol: "C", name: "Citigroup", exchange: "NYSE" },
   { symbol: "GS", name: "Goldman Sachs", exchange: "NYSE" },
-  { symbol: "MS", name: "Morgan Stanley", exchange: "NYSE" },
-  { symbol: "SPY", name: "S&P 500 ETF", exchange: "NYSEARCA" },
-  { symbol: "VNQ", name: "Vanguard Real Estate ETF", exchange: "NYSEARCA" },
-  { symbol: "IYR", name: "U.S. Real Estate ETF", exchange: "NYSEARCA" },
-  { symbol: "XLRE", name: "Real Estate Select Sector", exchange: "NYSEARCA" },
 ];
 
 const financeUrl = ({ symbol, exchange }) => `https://www.google.com/finance/quote/${encodeURIComponent(symbol)}:${encodeURIComponent(exchange)}`;
@@ -82,18 +77,21 @@ const formatMarket = (value, change) => {
 
 const renderMarketTicker = (quotes = {}) => {
   if (!tickerTrack) return;
-  const items = marketSymbols.map((market) => {
+  const pricedMarkets = marketSymbols.filter((market) => Number.isFinite(Number(quotes[market.symbol]?.price)));
+  const visibleMarkets = pricedMarkets.length ? pricedMarkets : marketSymbols;
+  const repeatCount = Math.max(6, Math.ceil(24 / visibleMarkets.length));
+  const items = visibleMarkets.map((market) => {
     const quote = formatMarket(quotes[market.symbol]?.price, quotes[market.symbol]?.change);
-    const detail = quote.price === "--" ? "View quote" : quote.price;
-    const movement = quote.change === "--" ? "Google Finance" : quote.change;
-    return `<a class="market-item" href="${financeUrl(market)}" target="_blank" rel="noopener" aria-label="${market.name} on Google Finance"><strong>${market.symbol}</strong><span>${detail}</span><em class="${quote.down ? "down" : ""}">${movement}</em></a>`;
+    const detail = quote.price === "--" ? "Loading price" : quote.price;
+    const movement = quote.change === "--" ? "Updating" : quote.change;
+    return `<a class="market-item" href="${financeUrl(market)}" target="_blank" rel="noopener" aria-label="${market.name} stock price on Google Finance"><strong>${market.symbol}</strong><span>${detail}</span><em class="${quote.down ? "down" : ""}">${movement}</em></a>`;
   });
-  tickerTrack.innerHTML = [...items, ...items, ...items].join("");
+  tickerTrack.innerHTML = Array.from({ length: repeatCount }, () => items).flat().join("");
 };
 
 const loadMarketData = async () => {
   renderMarketTicker();
-  const liveSymbols = marketSymbols.slice(0, 5).map((market) => market.symbol);
+  const liveSymbols = marketSymbols.map((market) => market.symbol);
   try {
     const response = await fetch(`/api/market?symbols=${liveSymbols.join(",")}`);
     if (!response.ok) throw new Error("Market data unavailable");
