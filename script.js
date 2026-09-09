@@ -59,30 +59,49 @@ tickerControl?.addEventListener("click", () => {
   tickerControl.textContent = paused ? ">" : "||";
 });
 
+const marketSymbols = [
+  { symbol: "JPM", name: "JPMorgan Chase", exchange: "NYSE" },
+  { symbol: "BAC", name: "Bank of America", exchange: "NYSE" },
+  { symbol: "WFC", name: "Wells Fargo", exchange: "NYSE" },
+  { symbol: "C", name: "Citigroup", exchange: "NYSE" },
+  { symbol: "GS", name: "Goldman Sachs", exchange: "NYSE" },
+  { symbol: "MS", name: "Morgan Stanley", exchange: "NYSE" },
+  { symbol: "SPY", name: "S&P 500 ETF", exchange: "NYSEARCA" },
+  { symbol: "VNQ", name: "Vanguard Real Estate ETF", exchange: "NYSEARCA" },
+  { symbol: "IYR", name: "U.S. Real Estate ETF", exchange: "NYSEARCA" },
+  { symbol: "XLRE", name: "Real Estate Select Sector", exchange: "NYSEARCA" },
+];
+
+const financeUrl = ({ symbol, exchange }) => `https://www.google.com/finance/quote/${encodeURIComponent(symbol)}:${encodeURIComponent(exchange)}`;
+
 const formatMarket = (value, change) => {
   const price = value == null ? Number.NaN : Number(value);
   const delta = change == null ? Number.NaN : Number(change);
   return { price: Number.isFinite(price) ? `$${price.toFixed(2)}` : "--", change: Number.isFinite(delta) ? `${delta >= 0 ? "+" : ""}${delta.toFixed(2)}%` : "--", down: Number.isFinite(delta) && delta < 0 };
 };
+
+const renderMarketTicker = (quotes = {}) => {
+  if (!tickerTrack) return;
+  const items = marketSymbols.map((market) => {
+    const quote = formatMarket(quotes[market.symbol]?.price, quotes[market.symbol]?.change);
+    const detail = quote.price === "--" ? "View quote" : quote.price;
+    const movement = quote.change === "--" ? "Google Finance" : quote.change;
+    return `<a class="market-item" href="${financeUrl(market)}" target="_blank" rel="noopener" aria-label="${market.name} on Google Finance"><strong>${market.symbol}</strong><span>${detail}</span><em class="${quote.down ? "down" : ""}">${movement}</em></a>`;
+  });
+  tickerTrack.innerHTML = [...items, ...items, ...items].join("");
+};
+
 const loadMarketData = async () => {
-  const symbols = ["JPM", "BAC", "GS", "C", "SPY"];
+  renderMarketTicker();
+  const liveSymbols = marketSymbols.slice(0, 5).map((market) => market.symbol);
   try {
-    const response = await fetch(`/api/market?symbols=${symbols.join(",")}`);
+    const response = await fetch(`/api/market?symbols=${liveSymbols.join(",")}`);
     if (!response.ok) throw new Error("Market data unavailable");
     const data = await response.json();
-    symbols.forEach((symbol) => {
-      const item = formatMarket(data[symbol]?.price, data[symbol]?.change);
-      const price = document.querySelector(`[data-symbol="${symbol}"]`);
-      const change = document.querySelector(`[data-change="${symbol}"]`);
-      if (price) price.textContent = item.price;
-      if (change) { change.textContent = item.change; change.classList.toggle("down", item.down); }
-    });
-  } catch {
-    document.querySelectorAll("[data-symbol]").forEach((item) => { item.textContent = "--"; });
-    document.querySelectorAll("[data-change]").forEach((item) => { item.textContent = "Unavailable"; });
-  }
+    renderMarketTicker(data);
+  } catch { renderMarketTicker(); }
 };
-if (document.querySelector("[data-symbol]")) loadMarketData();
+if (tickerTrack) loadMarketData();
 
 const slides = [...document.querySelectorAll(".video-slide")];
 const videoCount = document.querySelector("#video-count");

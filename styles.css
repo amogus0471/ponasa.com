@@ -60,14 +60,15 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .market-label small { color: rgba(255,255,255,0.66); font-size: 0.72rem; }
 .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #9ad7b7; box-shadow: 0 0 0 4px rgba(154,215,183,0.18); }
 .market-window { overflow: hidden; }
-.market-track { display: flex; width: max-content; gap: 34px; animation: ticker 26s linear infinite; }
+.market-track { display: flex; width: max-content; gap: 18px; animation: ticker 46s linear infinite; }
 .market-track.paused { animation-play-state: paused; }
-.market-item { display: grid; grid-template-columns: auto auto auto; gap: 9px; align-items: baseline; min-width: 132px; font-size: 0.9rem; }
+.market-item { display: grid; grid-template-columns: auto auto auto; gap: 9px; align-items: baseline; min-width: 198px; padding: 4px 10px; border-radius: 3px; font-size: 0.9rem; }
+.market-item:hover, .market-item:focus-visible { background: rgba(255,255,255,0.12); outline: none; }
 .market-item span { color: rgba(255,255,255,0.88); }
 .market-item em { color: #9ad7b7; font-size: 0.78rem; font-style: normal; }
 .market-item em.down { color: #ffb5a8; }
 .ticker-control { width: 30px; height: 30px; border: 1px solid rgba(255,255,255,0.42); border-radius: 50%; color: var(--white); background: transparent; cursor: pointer; font-size: 0.7rem; }
-@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-38%); } }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-33.333%); } }
 
 .section, .media-section { max-width: var(--content); margin: 0 auto; padding: 86px clamp(18px, 5vw, 72px); }
 .section-heading { max-width: 680px; margin-bottom: 34px; }
