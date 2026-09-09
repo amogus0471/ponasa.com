@@ -5,7 +5,7 @@ const port = 8000;
 const root = __dirname;
 const envPath = path.join(root, ".env.local");
 const env = fs.existsSync(envPath) ? fs.readFileSync(envPath, "utf8").split(/\r?\n/).reduce((values, line) => { const match = line.match(/^([^#=]+)=(.*)$/); if (match) values[match[1].trim()] = match[2].trim(); return values; }, {}) : {};
-const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".svg": "image/svg+xml", ".ico": "image/x-icon" };
+const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".xml": "application/xml; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".svg": "image/svg+xml", ".ico": "image/x-icon" };
 const marketCache = new Map();
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -57,12 +57,22 @@ const sendMarketData = async (res, symbols) => {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${port}`);
   if (url.pathname === "/api/market") { await sendMarketData(res, (url.searchParams.get("symbols") || "JPM,BAC,WFC,C,GS").split(",")); return; }
+  if (url.pathname.endsWith(".html")) {
+    const cleanPath = url.pathname === "/index.html" ? "/" : url.pathname.replace(/\.html$/, "");
+    res.writeHead(301, { Location: `${cleanPath}${url.search}` });
+    res.end();
+    return;
+  }
   const requestedPath = decodeURIComponent(url.pathname);
-  const filePath = path.normalize(path.join(root, requestedPath === "/" ? "index.html" : requestedPath));
+  const routePath = requestedPath === "/" ? "index.html" : (path.extname(requestedPath) ? requestedPath : `${requestedPath}.html`);
+  const filePath = path.normalize(path.join(root, routePath));
   if (!filePath.startsWith(root)) { res.writeHead(403); res.end("Forbidden"); return; }
   fs.readFile(filePath, (error, data) => {
     if (error) { fs.readFile(path.join(root, "404.html"), (notFoundError, notFoundData) => { res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" }); res.end(notFoundError ? "Not found" : notFoundData); }); return; }
-    res.writeHead(200, { "Content-Type": types[path.extname(filePath)] || "application/octet-stream" }); res.end(data);
+    const extension = path.extname(filePath);
+    const headers = { "Content-Type": types[extension] || "application/octet-stream" };
+    if ([".html", ".css", ".js"].includes(extension)) headers["Cache-Control"] = "no-store";
+    res.writeHead(200, headers); res.end(data);
   });
 });
 server.listen(port, () => console.log(`Ponasa preview running at http://localhost:${port}`));
