@@ -1,9 +1,9 @@
 # Ponasa property media manifest
 
-`properties.js` is the import-ready data source for the Portfolio and Tenants pages. It contains all 61 properties from `Search Results.csv`, keyed by folio number.
+`properties.js` is the import-ready address and media source for the Portfolio page. It contains all 61 properties from the supplied portfolio list, keyed by folio number.
 
-`PONASA_PROPERTY_COORDINATES` contains address-level coordinates produced once with the U.S. Census geocoder. The browser uses those saved coordinates for the OpenStreetMap view, so visitors do not trigger bulk geocoding requests.
+`property-details.js` contains cached public-record facts and exact parcel centroids. Regenerate it and `sitemap.xml` with `node tools/sync-property-data.js`.
 
-All tenant availability is shown as unavailable until the site is connected to Propertyware.
+The browser uses the cached coordinates for the OpenStreetMap view, so visitors do not trigger geocoding requests. The one condominium unit without its own parcel polygon uses its saved address point.
 
-Do not commit third-party API keys or key-bearing media URLs in this file. Public property and media data should be refreshed through a server-side integration before publication.
+Do not commit third-party API keys or key-bearing media URLs. Public property facts should be refreshed from the source before publication.

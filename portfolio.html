@@ -1,31 +1,68 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portfolio Map | Ponasa</title><meta name="description" content="Explore Ponasa LLC property profiles and mapped Broward County holdings."><link rel="icon" href="/assets/ponasa-favicon.png" type="image/png" sizes="any"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynxEwpuw40mZJQWIPqjMZowL0uTU=" crossorigin=""></head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portfolio | Ponasa</title>
+    <meta name="description" content="Explore Ponasa LLC residential, commercial, and hospitality properties in Broward County.">
+    <link rel="icon" href="/assets/ponasa-favicon.png" type="image/png" sizes="any">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynxEwpuw40mZJQWIPqjMZowL0uTU=" crossorigin="">
+  </head>
   <body>
-    <header class="site-header"><a class="brand" href="/" aria-label="Ponasa home"><img src="/assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button><nav class="site-nav" id="site-nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/tenants">Tenants</a><a href="/investors">Investors</a><div class="nav-dropdown"><button type="button" aria-expanded="false">Company</button><div class="dropdown-panel"><a href="/company">About Ponasa</a><a href="/locations">Office Locations</a></div></div><a href="/contact">Contact</a></nav></header>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Ponasa home"><img src="/assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+        <a href="/">Home</a><a href="/portfolio">Tenants</a><a href="/investors">Investors</a>
+        <div class="nav-dropdown"><button type="button" aria-expanded="false">Company</button><div class="dropdown-panel"><a href="/company">About Ponasa</a><a href="/locations">Office Locations</a></div></div>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
     <main>
-      <section class="subpage-hero"><p class="eyebrow">Portfolio</p><h1>Choose a property type.</h1><p>Review Ponasa holdings by asset type. Rental property profiles now live on the Tenants page.</p></section>
-      <section class="map-section map-section-top" aria-labelledby="portfolio-map-title">
-        <div class="section-heading section-heading-row"><div><p class="eyebrow">Property map</p><h2 id="portfolio-map-title">Every property in one view.</h2><p>Select any pin to open its property profile.</p></div><div class="property-summary"><strong>61</strong><span>properties mapped</span></div></div>
-        <div class="map-shell"><div id="property-map" class="property-map" role="region" aria-label="Interactive map of Ponasa properties"></div><p class="map-attribution">Address locations may be approximate. Map data &copy; OpenStreetMap contributors.</p></div>
+      <section class="subpage-hero portfolio-hero">
+        <p class="eyebrow">Portfolio</p>
+        <h1>Find a Ponasa property.</h1>
+        <p>Choose a property type to view its addresses and details.</p>
       </section>
-      <section class="subpage-content portfolio-picker" aria-label="Portfolio categories">
+
+      <section class="subpage-content portfolio-picker" aria-labelledby="portfolio-types-title">
+        <div class="section-heading compact-heading"><p class="eyebrow">Property types</p><h2 id="portfolio-types-title">What are you looking for?</h2></div>
         <div class="portfolio-selector">
-          <button class="portfolio-card hospitality active" type="button" data-portfolio-feature="hospitality"><h3>Hospitality</h3><p>Beach House Fort Lauderdale, a Hilton Resort.</p></button>
-          <button class="portfolio-card commercial" type="button" data-portfolio-feature="commercial"><h3>Commercial</h3><p>Industrial space at 4530 NE 6th Ave.</p></button>
-          <a class="portfolio-card residential residential-large" href="/tenants"><h3>Residential</h3><p>Rental homes, apartments, and long-term holdings.</p></a>
+          <button class="portfolio-card hospitality" type="button" data-portfolio-category="hospitality" aria-controls="portfolio-directory" aria-expanded="false"><h3>Hospitality</h3><p>505 N FT LAUDERDALE BCH BLVD #1210, FORT LAUDERDALE, FL 33304</p></button>
+          <button class="portfolio-card commercial" type="button" data-portfolio-category="commercial" aria-controls="portfolio-directory" aria-expanded="false"><h3>Commercial</h3><p>4520-4540 NE 6 AVE, OAKLAND PARK, FL 33334</p></button>
+          <button class="portfolio-card residential residential-large" type="button" data-portfolio-category="residential" aria-controls="portfolio-directory" aria-expanded="false"><h3>Residential</h3><p>Rental homes and apartments across Broward County.</p></button>
         </div>
       </section>
-      <section class="portfolio-feature-section" aria-labelledby="portfolio-feature-title">
-        <div class="section-heading section-heading-row">
-          <div><p class="eyebrow" id="portfolio-feature-kicker">Hospitality</p><h2 id="portfolio-feature-title">Beach House Fort Lauderdale.</h2><p id="portfolio-feature-copy">Hilton resort hospitality property imagery supplied for the portfolio.</p></div>
-          <a class="button secondary" id="portfolio-feature-link" href="https://www.google.com/maps/place/Beach+House+Fort+Lauderdale,+a+Hilton+Resort/" target="_blank" rel="noopener">View source</a>
+
+      <section class="property-directory" id="portfolio-directory" data-portfolio-directory hidden aria-labelledby="property-directory-title">
+        <div class="section-heading">
+          <p class="eyebrow" id="property-directory-kicker">Properties</p>
+          <h2 id="property-directory-title">Select a property type above.</h2>
+          <p id="property-directory-copy">Property cards open a detailed profile in a new tab.</p>
         </div>
-        <div class="portfolio-feature-gallery" id="portfolio-feature-gallery"></div>
+        <div class="property-tools">
+          <label class="property-search"><span class="sr-only">Search properties</span><input id="property-search" type="search" placeholder="Search by address or city"></label>
+          <label class="property-filter"><span class="sr-only">Filter by ZIP code</span><select id="property-zip"><option value="">All ZIP codes</option></select></label>
+          <span class="property-results" id="property-results" aria-live="polite"></span>
+        </div>
+        <div class="property-grid" id="property-grid"></div>
+        <p class="property-source-note">Building facts and parcel locations are sourced from Broward County public records. Availability and lease terms are provided separately.</p>
       </section>
-      <section class="media-section development-section"><div class="section-heading section-heading-row"><div><p class="eyebrow">In view</p><h2>Ownership with a long view.</h2><p>A quiet, focused look at the property types in the portfolio.</p></div><div class="carousel-controls" aria-label="Portfolio carousel controls"><button class="carousel-button" type="button" data-carousel-prev aria-label="Previous portfolio focus">&#8592;</button><span id="portfolio-count">01 / 03</span><button class="carousel-button" type="button" data-carousel-next aria-label="Next portfolio focus">&#8594;</button></div></div><div class="development-carousel" data-carousel aria-label="Portfolio focus carousel"><article class="development-slide development-slide-coastal is-active" data-slide="0"><div class="development-slide-content"><span>01</span><strong>Residential</strong><p>Homes and apartments managed for dependable long-term use.</p></div></article><article class="development-slide development-slide-urban" data-slide="1"><div class="development-slide-content"><span>02</span><strong>Commercial</strong><p>Income-producing spaces supported by practical stewardship.</p></div></article><article class="development-slide development-slide-green" data-slide="2"><div class="development-slide-content"><span>03</span><strong>Hospitality</strong><p>Furnished and destination-oriented properties with a human scale.</p></div></article></div></section>
+
+      <section class="map-section" aria-labelledby="portfolio-map-title">
+        <div class="section-heading">
+          <p class="eyebrow">Property map</p>
+          <h2 id="portfolio-map-title">Broward County locations.</h2>
+          <p>Zoom, move the map, or select a pin to open a property profile.</p>
+        </div>
+        <div class="map-shell"><div id="property-map" class="property-map" role="region" aria-label="Interactive map of Ponasa properties"></div><p class="map-attribution">Pins use Broward County parcel centroids. Map data &copy; OpenStreetMap contributors.</p></div>
+      </section>
     </main>
-    <footer class="site-footer"><div class="footer-main"><div class="footer-brand"><img src="/assets/ponasa-logo.png" alt="Ponasa"><p>Ponasa LLC owns and manages real estate in Broward County, Florida.</p><a href="mailto:info@ponasa.com">info@ponasa.com</a></div><div class="footer-column"><h3>Explore</h3><a href="/tenants">Tenants</a><a href="/portfolio">Portfolio</a><a href="/company">Company</a><a href="/locations">Locations</a></div><div class="footer-column"><h3>People</h3><a href="/tenants">Tenant listings</a><a href="/contact">Contact</a><a href="/sitemap">Site map</a></div><div class="footer-column"><h3>Legal</h3><a href="/privacy-policy">Privacy policy</a><a href="/terms">Terms of use</a><a href="/accessibility">Accessibility</a></div></div><div class="footer-bottom"><span>Copyright &copy; 2026 Ponasa LLC</span><span>Website information is not an offer or investment advice.</span></div></footer>
-    <script src="/assets/properties/properties.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><script src="/script.js"></script>
+    <footer class="site-footer"><div class="footer-main"><div class="footer-brand"><img src="/assets/ponasa-logo.png" alt="Ponasa"><p>Ponasa LLC owns and manages real estate in Broward County, Florida.</p><a href="mailto:info@ponasa.com">info@ponasa.com</a></div><div class="footer-column"><h3>Explore</h3><a href="/portfolio">Tenants</a><a href="/portfolio">Portfolio</a><a href="/company">Company</a><a href="/locations">Locations</a></div><div class="footer-column"><h3>People</h3><a href="/portfolio">Property listings</a><a href="/investors">Investors</a><a href="/contact">Contact</a><a href="/sitemap">Site map</a></div><div class="footer-column"><h3>Legal</h3><a href="/privacy-policy">Privacy policy</a><a href="/terms">Terms of use</a><a href="/accessibility">Accessibility</a></div></div><div class="footer-bottom"><span>Copyright &copy; 2026 Ponasa LLC</span><span>Website information is not an offer or investment advice.</span></div></footer>
+    <script src="/assets/properties/properties.js"></script>
+    <script src="/assets/properties/property-details.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/script.js"></script>
   </body>
 </html>

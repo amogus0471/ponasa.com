@@ -89,6 +89,11 @@ const sendMarketData = (res, symbols) => {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${port}`);
   if (url.pathname === "/api/market") { sendMarketData(res, (url.searchParams.get("symbols") || "JPM,BAC,WFC,C,GS").split(",")); return; }
+  if (url.pathname === "/tenants" || url.pathname === "/tenants/") {
+    res.writeHead(301, { Location: "/portfolio" });
+    res.end();
+    return;
+  }
   if (url.pathname.endsWith(".html")) {
     const cleanPath = url.pathname === "/index.html" ? "/" : url.pathname.replace(/\.html$/, "");
     res.writeHead(301, { Location: `${cleanPath}${url.search}` });
@@ -96,7 +101,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   const requestedPath = decodeURIComponent(url.pathname);
-  const propertyRoute = requestedPath.match(/^\/property\/[^/]+\/?$/);
+  const propertyRoute = requestedPath.match(/^\/(?:property|portfolio)\/[^/]+\/?$/);
   const routePath = propertyRoute ? "property.html" : (requestedPath === "/" ? "index.html" : (path.extname(requestedPath) ? requestedPath : `${requestedPath}.html`));
   const filePath = path.normalize(path.join(root, routePath));
   if (!filePath.startsWith(root)) { res.writeHead(403); res.end("Forbidden"); return; }

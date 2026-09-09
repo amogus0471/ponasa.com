@@ -152,7 +152,7 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .portfolio-card p { margin-bottom: 0; color: rgba(255,255,255,0.84); }
 .portfolio-card:hover, .portfolio-card:focus-visible, .portfolio-card.active { outline: 3px solid var(--green); outline-offset: 3px; }
 .portfolio-card.residential-large { grid-column: 1 / -1; min-height: 360px; }
-.portfolio-card.residential { background-image: url("/assets/ponasa-holdings-band.png"); }
+.portfolio-card.residential { background-image: url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=84"); }
 .portfolio-card.commercial { background-image: url("https://cdn.listingphotos.sierrastatic.com/large/v1786526591/33/33_A12015204_01.jpg"); }
 .portfolio-card.hospitality { background-image: url("/assets/hilton-beach-house-1.webp"); }
 .portfolio-feature-section { max-width: var(--content); margin: 0 auto; padding: 4px clamp(18px, 5vw, 72px) 88px; scroll-margin-top: 104px; }
@@ -178,7 +178,8 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .property-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .empty-state { grid-column: 1 / -1; padding: 34px; border: 1px solid var(--line); background: var(--surface); }
 .empty-state h3 { color: var(--green-dark); font-size: 1.45rem; }
-.property-card { position: relative; overflow: hidden; border: 1px solid var(--line); background: var(--white); }
+.property-card { position: relative; display: block; overflow: hidden; border: 1px solid var(--line); background: var(--white); transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+.property-card:hover, .property-card:focus-visible { border-color: var(--green); box-shadow: 0 12px 28px rgba(28, 32, 30, .12); outline: none; transform: translateY(-2px); }
 .property-card-index { position: absolute; z-index: 2; top: 12px; left: 12px; padding: 5px 7px; color: var(--white); background: var(--green-dark); font-size: .72rem; letter-spacing: .08em; }
 .property-media { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: linear-gradient(135deg, var(--green-dark), #567b67); color: var(--white); }
 .property-media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
@@ -187,10 +188,10 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .property-media-placeholder { display: grid; place-content: center; gap: 8px; padding: 30px; text-align: center; text-decoration: none; }
 .property-media-placeholder span { position: static; padding: 0; background: transparent; font-family: var(--display); font-size: 1.3rem; letter-spacing: .02em; text-transform: none; }
 .property-media-placeholder small { color: rgba(255,255,255,.72); font-size: .78rem; }
-.property-card-body { padding: 18px; }
+.property-card-body { display: block; padding: 18px; }
 .property-card-kicker { margin: 0 0 9px; color: var(--green); font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.property-card h3 { margin: 0 0 8px; color: var(--green-dark); font-size: 1.2rem; line-height: 1.2; }
-.property-card h3 a:hover, .property-card h3 a:focus-visible { color: var(--green); outline: none; }
+.property-card-body strong { display: block; min-height: 2.9em; margin: 0 0 14px; color: var(--green-dark); font-size: 1.08rem; line-height: 1.35; }
+.property-card:hover .property-card-body strong, .property-card:focus-visible .property-card-body strong { color: var(--green); }
 .property-card-folio { margin: 0 0 16px; color: var(--muted); font-size: .82rem; }
 .property-card .text-link { font-size: .84rem; }
 .property-source-note { max-width: 760px; margin: 22px 0 0; color: var(--muted); font-size: .83rem; }
@@ -198,7 +199,7 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .map-section-top { padding-top: 72px; }
 .map-section .section-heading { margin-bottom: 24px; }
 .map-shell { overflow: hidden; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
-.property-map { min-height: 560px; background: #d8e5dc; }
+.property-map { height: clamp(320px, 38vw, 440px); min-height: 0; background: #d8e5dc; }
 .map-attribution { margin: 0; padding: 10px 14px; color: var(--muted); background: var(--white); font-size: .76rem; }
 .property-marker { display: grid; place-items: center; border: 2px solid var(--white); border-radius: 50%; background: var(--green); box-shadow: 0 2px 8px rgba(0,0,0,.28); }
 .property-marker span { width: 4px; height: 4px; border-radius: 50%; background: var(--white); }
@@ -221,6 +222,10 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .property-profile-copy h1 { margin-bottom: 18px; font-size: clamp(2.4rem, 5vw, 4.4rem); }
 .property-profile-copy > p:not(.eyebrow) { color: var(--muted); font-size: 1.08rem; }
 .property-action-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.property-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 34px; border: 1px solid var(--line); background: var(--line); }
+.property-facts article { display: grid; min-height: 112px; align-content: center; gap: 7px; padding: 20px; background: var(--white); }
+.property-facts span { color: var(--muted); font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.property-facts strong { color: var(--green-dark); font-size: 1.15rem; }
 .property-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding-top: 34px; }
 .property-panel { padding: 22px; border: 1px solid var(--line); background: var(--white); }
 .property-panel dl { display: grid; gap: 15px; margin: 0; }
@@ -250,7 +255,7 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
 .not-found p:not(.eyebrow) { max-width: 500px; color: rgba(255,255,255,0.84); }
 
 .site-footer { position: relative; overflow: hidden; padding: 58px max(18px, calc((100vw - var(--content)) / 2)) 20px; color: var(--white); border-top: 1px solid rgba(255,255,255,.14); background: var(--concrete); }
-.footer-video { display: none; }
+.footer-video { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; opacity: .14; filter: saturate(.55) contrast(.9); pointer-events: none; }
 .site-footer::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(52,56,54,.96), rgba(0,71,45,.84)); pointer-events: none; }
 .footer-main, .footer-bottom { position: relative; z-index: 1; }
 .footer-main { display: grid; grid-template-columns: 1.7fr repeat(3, 1fr); gap: 42px; padding-bottom: 48px; }
@@ -285,6 +290,7 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
   .portfolio-feature-gallery { grid-template-columns: 1fr 1fr; }
   .portfolio-feature-gallery a:first-child { grid-column: 1 / -1; grid-row: auto; }
   .property-profile-hero, .property-detail-grid { grid-template-columns: 1fr; }
+  .property-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .property-mini-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer-main { grid-template-columns: 1.5fr repeat(3, 1fr); gap: 22px; }
 }
@@ -301,13 +307,14 @@ h3 { margin-bottom: 8px; font-size: 1.08rem; line-height: 1.25; }
   .feature-split, .about-preview { padding-top: 62px; padding-bottom: 62px; }
   .feature-image { height: 280px; }
   .video-carousel, .video-slide video, .development-carousel { min-height: 280px; height: 280px; }
-  .property-map { min-height: 390px; }
+  .property-map { height: 320px; min-height: 0; }
   .property-directory .section-heading-row { align-items: start; }
   .property-summary { text-align: left; }
   .property-results { width: 100%; margin-left: 0; padding: 4px 0 0; }
   .property-profile-media img { min-height: 260px; }
   .property-action-row .button { width: 100%; }
   .property-mini-gallery { grid-template-columns: 1fr; }
+  .property-facts { grid-template-columns: 1fr 1fr; }
   .contact-strip, .footer-bottom { align-items: flex-start; flex-direction: column; }
   .contact-strip .button { width: 100%; }
   .footer-main { grid-template-columns: 1fr 1fr; gap: 30px 20px; }

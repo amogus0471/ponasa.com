@@ -3,6 +3,21 @@ const siteNav = document.querySelector(".site-nav");
 const header = document.querySelector(".site-header");
 const dropdowns = document.querySelectorAll(".nav-dropdown");
 
+const footerVideoUrl = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260624_210218_173f8eba-17ff-4e27-972b-d128af25bf49.mp4";
+document.querySelectorAll(".site-footer").forEach((footer) => {
+  if (footer.querySelector(".footer-video")) return;
+  const video = document.createElement("video");
+  video.className = "footer-video";
+  video.src = footerVideoUrl;
+  video.autoplay = true;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.setAttribute("aria-hidden", "true");
+  footer.prepend(video);
+});
+
 const closeDropdowns = () => {
   dropdowns.forEach((dropdown) => {
     dropdown.classList.remove("open");
@@ -29,6 +44,14 @@ dropdowns.forEach((dropdown) => {
     closeDropdowns();
     dropdown.classList.toggle("open", willOpen);
     trigger.setAttribute("aria-expanded", String(willOpen));
+  });
+  dropdown.addEventListener("mouseleave", () => {
+    if (window.matchMedia("(min-width: 981px)").matches) closeDropdowns();
+  });
+  dropdown.addEventListener("focusout", (event) => {
+    if (event.relatedTarget instanceof Node && dropdown.contains(event.relatedTarget)) return;
+    dropdown.classList.remove("open");
+    trigger?.setAttribute("aria-expanded", "false");
   });
 });
 document.addEventListener("click", (event) => {
@@ -150,26 +173,26 @@ const propertyGrid = document.querySelector("#property-grid");
 const propertySearch = document.querySelector("#property-search");
 const propertyZip = document.querySelector("#property-zip");
 const propertyResults = document.querySelector("#property-results");
-const propertyCount = document.querySelector("#property-count");
 const propertyProfile = document.querySelector("#property-profile");
-const tenantGrid = document.querySelector("#tenant-grid");
-const tenantCount = document.querySelector("#tenant-count");
 const portfolioDirectory = document.querySelector("[data-portfolio-directory]");
 const portfolioButtons = document.querySelectorAll("[data-portfolio-category]");
-const portfolioFeatureButtons = document.querySelectorAll("[data-portfolio-feature]");
-const portfolioFeatureTitle = document.querySelector("#portfolio-feature-title");
-const portfolioFeatureKicker = document.querySelector("#portfolio-feature-kicker");
-const portfolioFeatureCopy = document.querySelector("#portfolio-feature-copy");
-const portfolioFeatureLink = document.querySelector("#portfolio-feature-link");
-const portfolioFeatureGallery = document.querySelector("#portfolio-feature-gallery");
-let activePortfolioCategory = propertyGrid ? "residential" : "";
+const propertyDirectoryTitle = document.querySelector("#property-directory-title");
+const propertyDirectoryKicker = document.querySelector("#property-directory-kicker");
+const propertyDirectoryCopy = document.querySelector("#property-directory-copy");
+let activePortfolioCategory = "";
 
 const escapePropertyHtml = (value) => String(value).replace(/[&<>\"']/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;",
 }[character]));
 const zillowSlug = (address) => address.replace(/[#,\.]/g, "").replace(/\s+/g, "-");
 const zillowSearchUrl = (address) => `https://www.zillow.com/homes/${zillowSlug(address)}_rb/`;
-const propertyDetailUrl = (property) => `/property/${encodeURIComponent(property.folio)}`;
+const propertySlug = (property) => property.address
+  .normalize("NFKD")
+  .toLowerCase()
+  .replace(/#/g, " unit ")
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-+|-+$/g, "");
+const propertyDetailUrl = (property) => `/portfolio/${propertySlug(property)}`;
 const folioPlain = (property) => property.folio.replace(/-/g, "");
 const bcpaRecordUrl = (property) => `https://web.bcpa.net/bcpaclient/#/Record-Search?folio=${encodeURIComponent(folioPlain(property))}`;
 const bcpaMapUrl = (property) => `https://gisweb-adapters.bcpa.net/bcpawebmap_ex_new/bcpawebmap.aspx?FOLIO=${encodeURIComponent(folioPlain(property))}`;
@@ -180,79 +203,42 @@ const addressBeforeState = (property) => property.address.replace(/\s+FL\s+\d{5}
 const propertyCity = (property) => propertyCities.find((city) => addressBeforeState(property).endsWith(` ${city}`)) ?? "Broward County";
 const propertyStreet = (property) => addressBeforeState(property).replace(new RegExp(`\\s+${propertyCity(property)}$`), "");
 const propertyLabel = (property) => property.address.replace(/\s+FL\s+\d{5}\s*$/, "").replace(/\s+/g, " ");
-const propertyCategory = (property) => property.category ?? "residential";
+const propertyCategory = (property) => {
+  if (property.folio === "504201GJ1190") return "hospitality";
+  if (property.folio === "494214-09-0300") return "commercial";
+  return "residential";
+};
 const propertyMedia = (property) => window.PONASA_EXTERIOR_MEDIA?.[property.folio];
+const propertyDetails = (property) => window.PONASA_PROPERTY_DETAILS?.[property.folio] ?? {};
 const propertyZillowMedia = (property) => window.PONASA_VERIFIED_MEDIA?.[property.folio];
 const propertyZillowUrl = (property) => propertyZillowMedia(property)?.zillowUrl ?? zillowSearchUrl(property.address);
-const portfolioFeatures = {
-  hospitality: {
-    kicker: "Hospitality",
-    title: "Beach House Fort Lauderdale.",
-    copy: "Hilton resort hospitality property imagery supplied for the portfolio.",
-    link: "https://www.google.com/maps/place/Beach+House+Fort+Lauderdale,+a+Hilton+Resort/",
-    images: ["/assets/hilton-beach-house-1.webp", "/assets/hilton-beach-house-2.webp", "/assets/hilton-beach-house-3.png"],
-  },
-  commercial: {
-    kicker: "Commercial",
-    title: "4530 NE 6th Ave #4540.",
-    copy: "Active industrial listing in Oakland Park: 2,000 square feet, built in 1973, listed at $4,150 per month.",
-    link: "https://www.mcgadvisors.com/property-search/detail/33/A12015204/4530-ne-6th-ave-oakland-park-fl-33334/?src=2",
-    images: [
-      "https://cdn.listingphotos.sierrastatic.com/large/v1786526591/33/33_A12015204_01.jpg",
-      "https://cdn.listingphotos.sierrastatic.com/large/v1786526589/33/33_A12015204_03.jpg",
-      "https://cdn.listingphotos.sierrastatic.com/large/v1786526588/33/33_A12015204_04.jpg",
-      "https://cdn.listingphotos.sierrastatic.com/large/v1786526592/33/33_A12015204_05.jpg",
-      "https://cdn.listingphotos.sierrastatic.com/large/v1786526593/33/33_A12015204_06.jpg",
-    ],
-  },
-};
-
-const propertyMapCenters = {
-  "DEERFIELD BEACH": [26.3184, -80.0998],
-  "POMPANO BEACH": [26.2379, -80.1248],
-  "TAMARAC": [26.2129, -80.2498],
-  "NORTH LAUDERDALE": [26.2173, -80.2259],
-  "LAUDERDALE LAKES": [26.1662, -80.2084],
-  "SUNRISE": [26.1669, -80.2566],
-  "LAUDERHILL": [26.1404, -80.2137],
-  "FORT LAUDERDALE": [26.1224, -80.1373],
-  "HOLLYWOOD": [26.0112, -80.1495],
-  "OAKLAND PARK": [26.1723, -80.1310],
-  "UNINCORPORATED": [26.1500, -80.2000],
-};
-const propertyHash = (value) => [...String(value)].reduce((total, character) => ((total * 31) + character.charCodeAt(0)) >>> 0, 7);
-const propertyMapPoint = (property, index) => {
-  const savedPoint = window.PONASA_PROPERTY_COORDINATES?.[property.folio];
-  if (Array.isArray(savedPoint) && savedPoint.length === 2) return savedPoint;
-  if (Array.isArray(property.coordinates) && property.coordinates.length === 2) return property.coordinates;
-  const city = propertyCity(property);
-  const center = propertyMapCenters[city] ?? propertyMapCenters["UNINCORPORATED"];
-  const hash = propertyHash(property.folio);
-  const latOffset = (((hash % 17) - 8) / 1000) + ((index % 3) - 1) / 1800;
-  const lonOffset = ((((Math.floor(hash / 17)) % 17) - 8) / 1000) + ((index % 4) - 1.5) / 1800;
-  return [center[0] + latOffset, center[1] + lonOffset];
-};
+const propertyMapPoint = (property) => window.PONASA_PARCEL_COORDINATES?.[property.folio];
+const fallbackPropertyImage = (property) => propertyCategory(property) === "hospitality"
+  ? "/assets/hilton-beach-house-1.webp"
+  : "/assets/ponasa-holdings-band.png";
 
 const renderPropertyMap = () => {
   const mapElement = document.querySelector("#property-map");
   if (!mapElement || !Array.isArray(window.PONASA_PROPERTIES) || !window.L) return;
-  const map = window.L.map(mapElement, { scrollWheelZoom: false });
+  const map = window.L.map(mapElement, { scrollWheelZoom: true, zoomControl: true });
   window.L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>',
   }).addTo(map);
   const bounds = [];
   const marker = window.L.divIcon({ className: "property-marker", html: "<span></span>", iconSize: [18, 18], iconAnchor: [9, 9] });
-  window.PONASA_PROPERTIES.forEach((property, index) => {
-    const point = propertyMapPoint(property, index);
+  window.PONASA_PROPERTIES.forEach((property) => {
+    const point = propertyMapPoint(property);
+    if (!Array.isArray(point) || point.length !== 2) return;
     bounds.push(point);
     const detailUrl = propertyDetailUrl(property);
     const address = propertyLabel(property);
     window.L.marker(point, { icon: marker, title: address })
       .addTo(map)
-      .bindPopup(`<div class="map-popup"><strong>${escapePropertyHtml(address)}</strong><span>Folio ${escapePropertyHtml(property.folio)}</span><a href="${escapePropertyHtml(detailUrl)}">Open property profile <span aria-hidden="true">→</span></a></div>`);
+      .bindPopup(`<div class="map-popup"><strong>${escapePropertyHtml(address)}</strong><span>${escapePropertyHtml(propertyCity(property))}, Florida</span><a href="${escapePropertyHtml(detailUrl)}" target="_blank" rel="noopener">Open property profile <span aria-hidden="true">→</span></a></div>`);
   });
-  if (bounds.length) map.fitBounds(bounds, { padding: [24, 24] });
+  if (bounds.length) map.fitBounds(bounds, { padding: [22, 22], maxZoom: 12 });
+  window.requestAnimationFrame(() => map.invalidateSize());
 };
 
 const renderPropertyDirectory = () => {
@@ -269,77 +255,61 @@ const renderPropertyDirectory = () => {
 
   propertyGrid.innerHTML = visibleProperties.length ? visibleProperties.map((property, index) => {
     const media = propertyMedia(property);
-    const zillowMedia = propertyZillowMedia(property);
-    const zillowLabel = zillowMedia ? (zillowMedia.type === "listing-photo" ? `${zillowMedia.imageUrls.length} Zillow listing photos verified` : "Zillow Street View verified") : "Zillow link";
-    const mediaMarkup = media?.imageUrl
-      ? `<a class="property-media" href="${escapePropertyHtml(propertyDetailUrl(property))}" aria-label="Open profile for ${escapePropertyHtml(propertyLabel(property))}"><img src="${escapePropertyHtml(media.imageUrl)}" alt="Exterior of ${escapePropertyHtml(propertyLabel(property))}" loading="lazy"><span>Exterior photo</span></a>`
-      : `<a class="property-media property-media-placeholder" href="${escapePropertyHtml(propertyDetailUrl(property))}" aria-label="Open profile for ${escapePropertyHtml(propertyLabel(property))}"><span>Open property</span><small>Exterior photo pending</small></a>`;
-    return `<article class="property-card"><div class="property-card-index">${String(index + 1).padStart(2, "0")}</div>${mediaMarkup}<div class="property-card-body"><p class="property-card-kicker">${escapePropertyHtml(zillowLabel)}</p><h3><a href="${escapePropertyHtml(propertyDetailUrl(property))}">${escapePropertyHtml(propertyLabel(property))}</a></h3><p class="property-card-folio">Folio ${escapePropertyHtml(property.folio)}</p><a class="text-link" href="${escapePropertyHtml(propertyDetailUrl(property))}">View property profile <span aria-hidden="true">→</span></a></div></article>`;
+    const imageUrl = media?.imageUrl || fallbackPropertyImage(property);
+    const fallbackUrl = fallbackPropertyImage(property);
+    const details = propertyDetails(property);
+    const area = details.buildingSqFt ? `${details.buildingSqFt.toLocaleString()} sq ft` : propertyCity(property);
+    return `<a class="property-card" href="${escapePropertyHtml(propertyDetailUrl(property))}" target="_blank" rel="noopener" aria-label="Open profile for ${escapePropertyHtml(propertyLabel(property))} in a new tab"><span class="property-card-index">${String(index + 1).padStart(2, "0")}</span><span class="property-media"><img src="${escapePropertyHtml(imageUrl)}" alt="Exterior of ${escapePropertyHtml(propertyLabel(property))}" loading="lazy" onerror="this.onerror=null;this.src='${escapePropertyHtml(fallbackUrl)}'"><span>View details</span></span><span class="property-card-body"><span class="property-card-kicker">${escapePropertyHtml(area)}</span><strong>${escapePropertyHtml(property.address.replace(/\s+/g, " "))}</strong><span class="text-link">Open property profile <span aria-hidden="true">→</span></span></span></a>`;
   }).join("") : `<div class="empty-state"><p class="eyebrow">${escapePropertyHtml(activePortfolioCategory)}</p><h3>No public properties available.</h3><p>This category is not listed online right now.</p></div>`;
-  if (propertyResults) propertyResults.textContent = `Showing ${visibleProperties.length} of ${window.PONASA_PROPERTIES.length}`;
+  if (propertyResults) propertyResults.textContent = `${visibleProperties.length} ${visibleProperties.length === 1 ? "property" : "properties"}`;
 };
 
 if (propertyGrid && Array.isArray(window.PONASA_PROPERTIES)) {
   const zipCodes = [...new Set(window.PONASA_PROPERTIES.map(propertyZipCode).filter(Boolean))].sort();
   zipCodes.forEach((zip) => propertyZip?.insertAdjacentHTML("beforeend", `<option value="${zip}">${zip}</option>`));
-  if (propertyCount) propertyCount.textContent = String(window.PONASA_PROPERTIES.length);
   propertySearch?.addEventListener("input", renderPropertyDirectory);
   propertyZip?.addEventListener("change", renderPropertyDirectory);
   portfolioButtons.forEach((button) => {
     button.addEventListener("click", () => {
       activePortfolioCategory = button.dataset.portfolioCategory ?? "";
+      if (propertySearch) propertySearch.value = "";
+      if (propertyZip) propertyZip.value = "";
       portfolioButtons.forEach((item) => item.classList.toggle("active", item === button));
+      portfolioButtons.forEach((item) => item.setAttribute("aria-expanded", String(item === button)));
+      const categoryLabels = {
+        hospitality: ["Hospitality", "Hospitality property", "Beachfront hospitality in Fort Lauderdale."],
+        commercial: ["Commercial", "Commercial property", "Commercial space in Oakland Park."],
+        residential: ["Residential", "Residential properties", "Rental homes and apartments across Broward County."],
+      };
+      const [kicker, title, copy] = categoryLabels[activePortfolioCategory] ?? ["Properties", "Ponasa properties", "Property profiles and public-record details."];
+      if (propertyDirectoryKicker) propertyDirectoryKicker.textContent = kicker;
+      if (propertyDirectoryTitle) propertyDirectoryTitle.textContent = title;
+      if (propertyDirectoryCopy) propertyDirectoryCopy.textContent = copy;
       renderPropertyDirectory();
       portfolioDirectory?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
-  renderPropertyDirectory();
 }
-
-const renderTenantDirectory = () => {
-  if (!tenantGrid || !Array.isArray(window.PONASA_PROPERTIES)) return;
-  tenantGrid.innerHTML = window.PONASA_PROPERTIES.map((property) => `<article class="tenant-card"><span>Unavailable</span><h3>${escapePropertyHtml(propertyLabel(property))}</h3><p>Folio ${escapePropertyHtml(property.folio)}</p></article>`).join("");
-  if (tenantCount) tenantCount.textContent = String(window.PONASA_PROPERTIES.length);
-};
-renderTenantDirectory();
-
-const renderPortfolioFeature = (featureKey = "hospitality") => {
-  if (!portfolioFeatureGallery) return;
-  const feature = portfolioFeatures[featureKey] ?? portfolioFeatures.hospitality;
-  if (portfolioFeatureKicker) portfolioFeatureKicker.textContent = feature.kicker;
-  if (portfolioFeatureTitle) portfolioFeatureTitle.textContent = feature.title;
-  if (portfolioFeatureCopy) portfolioFeatureCopy.textContent = feature.copy;
-  if (portfolioFeatureLink) portfolioFeatureLink.href = feature.link;
-  portfolioFeatureGallery.innerHTML = feature.images.map((image, index) => `<a href="${escapePropertyHtml(feature.link)}" target="_blank" rel="noopener"><img src="${escapePropertyHtml(image)}" alt="${escapePropertyHtml(feature.title)} image ${index + 1}" loading="lazy"></a>`).join("");
-};
-
-portfolioFeatureButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const featureKey = button.dataset.portfolioFeature ?? "hospitality";
-    portfolioFeatureButtons.forEach((item) => item.classList.toggle("active", item === button));
-    renderPortfolioFeature(featureKey);
-    document.querySelector(".portfolio-feature-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-});
-renderPortfolioFeature();
 
 const renderPropertyProfile = () => {
   if (!propertyProfile || !Array.isArray(window.PONASA_PROPERTIES)) return;
-  const folioFromPath = decodeURIComponent(window.location.pathname.match(/^\/property\/([^/]+)\/?$/)?.[1] ?? "");
-  const folio = folioFromPath || new URLSearchParams(window.location.search).get("folio");
-  const property = window.PONASA_PROPERTIES.find((item) => item.folio === folio);
+  const slugFromPath = decodeURIComponent(window.location.pathname.match(/^\/portfolio\/([^/]+)\/?$/)?.[1] ?? "");
+  const legacyFolio = decodeURIComponent(window.location.pathname.match(/^\/property\/([^/]+)\/?$/)?.[1] ?? "") || new URLSearchParams(window.location.search).get("folio");
+  const property = window.PONASA_PROPERTIES.find((item) => propertySlug(item) === slugFromPath || item.folio === legacyFolio);
   if (!property) {
     document.title = "Property not found | Ponasa";
     propertyProfile.innerHTML = '<a class="property-back-link" href="/portfolio">Back to property map</a><div class="empty-state"><p class="eyebrow">Property</p><h1>Property not found.</h1><p>The requested property profile is not available.</p></div>';
     return;
   }
   const media = propertyMedia(property);
+  const details = propertyDetails(property);
   const zillowMedia = propertyZillowMedia(property);
   const zillowUrl = propertyZillowUrl(property);
   const zip = propertyZipCode(property);
   const city = propertyCity(property);
   const sourceItems = [
     { label: "View on Zillow", url: zillowUrl },
+    { label: "County property record", url: bcpaRecordUrl(property) },
     { label: "County photo archive", url: media?.photoPageUrl },
     { label: "County parcel map", url: bcpaMapUrl(property) },
     { label: "Google Maps", url: googleMapsUrl(property) },
@@ -358,11 +328,22 @@ const renderPropertyProfile = () => {
     document.head.append(canonical);
   }
   canonical.setAttribute("href", `https://ponasa.com${propertyDetailUrl(property)}`);
+  const category = propertyCategory(property);
+  const missingValue = category === "commercial" ? "Not applicable" : "Not listed";
+  const detailFacts = [
+    ["Building area", details.buildingSqFt ? `${details.buildingSqFt.toLocaleString()} sq ft` : "Not listed"],
+    ["Bedrooms", details.beds != null ? (details.beds < 1 ? "Studio" : String(details.beds)) : missingValue],
+    ["Bathrooms", details.baths != null ? String(details.baths) : missingValue],
+    ["Year built", details.yearBuilt || "Not listed"],
+    ["Property type", details.type || category],
+    ["Lot size", details.lot || (category === "hospitality" ? "Condominium" : "Not listed")],
+  ];
+  const imageUrl = media?.imageUrl || fallbackPropertyImage(property);
   propertyProfile.innerHTML = `
-    <a class="property-back-link" href="/tenants">Back to rental properties</a>
+    <a class="property-back-link" href="/portfolio">Back to portfolio</a>
     <div class="property-profile-hero">
       <div class="property-profile-media">
-        ${media?.imageUrl ? `<img src="${escapePropertyHtml(media.imageUrl)}" alt="Exterior of ${escapePropertyHtml(propertyLabel(property))}">` : ""}
+        <img src="${escapePropertyHtml(imageUrl)}" alt="Exterior of ${escapePropertyHtml(propertyLabel(property))}" onerror="this.onerror=null;this.src='${escapePropertyHtml(fallbackPropertyImage(property))}'">
         <span>${escapePropertyHtml(media?.photoCount ? `${media.photoCount} county photos available` : "Exterior photo")}</span>
       </div>
       <div class="property-profile-copy">
@@ -374,19 +355,23 @@ const renderPropertyProfile = () => {
         </div>
       </div>
     </div>
+    <section class="property-facts" aria-label="Property facts">
+      ${detailFacts.map(([label, value]) => `<article><span>${escapePropertyHtml(label)}</span><strong>${escapePropertyHtml(value)}</strong></article>`).join("")}
+    </section>
     <section class="property-detail-grid" aria-label="Property details">
       <article class="property-panel"><p class="eyebrow">Address</p><dl><div><dt>Street address</dt><dd>${escapePropertyHtml(propertyStreet(property))}</dd></div><div><dt>City</dt><dd>${escapePropertyHtml(city)}</dd></div><div><dt>State</dt><dd>Florida</dd></div><div><dt>ZIP</dt><dd>${escapePropertyHtml(zip)}</dd></div></dl></article>
-      <article class="property-panel"><p class="eyebrow">Parcel</p><dl><div><dt>Folio</dt><dd>${escapePropertyHtml(property.folio)}</dd></div><div><dt>Owner</dt><dd>PONASA LLC</dd></div><div><dt>County</dt><dd>Broward County</dd></div><div><dt>Image source</dt><dd>Broward County Property Appraiser</dd></div></dl></article>
+      <article class="property-panel"><p class="eyebrow">Public record</p><dl><div><dt>Parcel reference</dt><dd>${escapePropertyHtml(property.folio)}</dd></div><div><dt>Owner</dt><dd>Ponasa LLC</dd></div><div><dt>County</dt><dd>Broward County</dd></div><div><dt>Data source</dt><dd>Broward County Property Appraiser</dd></div></dl></article>
       <article class="property-panel"><p class="eyebrow">External records</p><div class="property-link-list">${sourceItems.map((item) => `<a href="${escapePropertyHtml(item.url)}" target="_blank" rel="noopener">${escapePropertyHtml(item.label)} <span aria-hidden="true">↗</span></a>`).join("")}</div></article>
       ${zillowGallery}
-    </section>`;
+    </section>
+    <p class="property-source-note">Property facts are from Broward County public records and may differ from current leasing information. Contact Ponasa for availability and current terms.</p>`;
 };
 
 renderPropertyProfile();
 
 const propertySitemapList = document.querySelector("#property-sitemap-list");
 if (propertySitemapList && Array.isArray(window.PONASA_PROPERTIES)) {
-  propertySitemapList.innerHTML = window.PONASA_PROPERTIES.map((property) => `<li><a href="${escapePropertyHtml(propertyDetailUrl(property))}">${escapePropertyHtml(propertyLabel(property))}</a><span>Folio ${escapePropertyHtml(property.folio)}</span></li>`).join("");
+  propertySitemapList.innerHTML = window.PONASA_PROPERTIES.map((property) => `<li><a href="${escapePropertyHtml(propertyDetailUrl(property))}">${escapePropertyHtml(property.address.replace(/\s+/g, " "))}</a><span>Property profile</span></li>`).join("");
 }
 
 renderPropertyMap();
