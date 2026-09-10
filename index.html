@@ -1,48 +1,149 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ponasa | Real Estate</title>
-    <meta name="description" content="Ponasa LLC owns and manages a focused portfolio of real estate in Broward County, Florida.">
-    <link rel="icon" href="/assets/ponasa-favicon.png" type="image/png" sizes="any">
-    <link rel="stylesheet" href="/styles.css">
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="Ponasa home"><img src="/assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
-      <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-        <a href="/">Home</a><a href="/portfolio">Tenants</a><a href="/investors">Investors</a>
-        <div class="nav-dropdown"><button type="button" aria-expanded="false">Company</button><div class="dropdown-panel"><a href="/company">About Ponasa</a><a href="/locations">Office Locations</a></div></div>
-        <a href="/contact">Contact</a>
-      </nav>
-    </header>
-    <main>
-      <section class="hero hero-home">
-        <div class="hero-copy"><p class="eyebrow">Ponasa</p><h1>Real estate, kept simple.</h1><p>We own and manage properties with a long view.</p><div class="hero-actions"><a class="button primary" href="/portfolio">Tenant listings</a><a class="button secondary" href="/contact">Contact Ponasa</a></div></div>
-        <div class="hero-media" role="img" aria-label="Modern home with warm exterior lighting"></div>
-      </section>
-      <section class="stats-band stats-band-html" aria-label="Ponasa portfolio statistics">
-        <div class="stat-grid">
-          <article><strong>$25M+</strong><span>in real estate holdings</span></article>
-          <article><strong>25+</strong><span>years in the business</span></article>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ponasa | Real Estate</title>
+  <meta name="description"
+    content="Ponasa LLC owns and manages a focused portfolio of real estate in Broward County, Florida.">
+  <link rel="icon" href="/assets/ponasa-favicon.png" type="image/png" sizes="any">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+  <a class="brand" href="/" aria-label="Ponasa home"><img src="/assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a>
+  <div class="header-actions">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="home-link" href="/">Home</a>
+      <div class="nav-dropdown language-dropdown">
+        <button class="language-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="language-symbol" aria-hidden="true">◎</span><span data-language-current>English</span></button>
+        <div class="dropdown-panel language-panel" role="menu" aria-label="Language">
+          <button type="button" role="menuitemradio" aria-checked="true" data-language-option="en">English</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-language-option="es">Spanish</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-language-option="it">Italian</button>
         </div>
-      </section>
-      <section class="market-strip" aria-label="Market watch">
-        <div class="market-label"><span class="live-dot"></span><strong>Market watch</strong><small>Delayed quotes</small></div>
-        <div class="market-window"><div class="market-track" id="market-track" aria-live="polite"></div></div>
-        <button class="ticker-control" type="button" aria-label="Pause market ticker" aria-pressed="false">||</button>
-      </section>
-      <section class="feature-split"><div class="feature-image" role="img" aria-label="Apartment building exterior"></div><div class="feature-content"><p class="eyebrow">Portfolio</p><h2>Residential, commercial, and hospitality properties.</h2><p>A focused Broward County portfolio managed with a long view.</p><a class="text-link" href="/portfolio">Explore the portfolio <span aria-hidden="true">-></span></a></div></section>
-      <section class="media-section development-section"><div class="section-heading section-heading-row"><div><p class="eyebrow">Local developments</p><h2>Broward County places people want to live.</h2><p>Explore the local amenities and development patterns that continue to attract residents.</p></div><div class="carousel-controls" aria-label="Local development carousel controls"><button class="carousel-button" type="button" data-carousel-prev aria-label="Previous development">&#8592;</button><span id="development-count">01 / 03</span><button class="carousel-button" type="button" data-carousel-next aria-label="Next development">&#8594;</button></div></div>
-        <div class="development-carousel" data-carousel aria-label="Broward County development highlights"><article class="development-slide development-slide-coastal is-active" data-slide="0"><a class="development-slide-content" href="https://www.broward.org/BCT/PREMO" target="_blank" rel="noopener"><span>01</span><strong>Oakland Park Boulevard transit</strong><p>Broward County plans a 15-mile rapid-transit corridor connecting A1A and Sawgrass Mills.</p><small>Project details -></small></a></article><article class="development-slide development-slide-urban" data-slide="1"><a class="development-slide-content" href="https://www.fortlauderdale.gov/Government/Departments/Community-Redevelopment-Agency/Northwest-Progresso-Flagler-Heights-CRA/NPF-CRA-Redevelopment-Plan" target="_blank" rel="noopener"><span>02</span><strong>Northwest-Progresso-Flagler Heights</strong><p>The 2025 plan supports mixed-income housing, small businesses, adaptive reuse, and public spaces.</p><small>Read the plan -></small></a></article><article class="development-slide development-slide-green" data-slide="2"><a class="development-slide-content" href="https://www.broward.org/browardnext" target="_blank" rel="noopener"><span>03</span><strong>BrowardNEXT</strong><p>The county land-use update addresses transportation, housing, climate, and redevelopment.</p><small>County update -></small></a></article></div>
-      </section>
-      <section class="about-preview"><div><p class="eyebrow">About Ponasa</p><h2>Built through ownership experience.</h2><p>Ponasa began in 2004 in Southeast Florida and remains close to the properties and people it serves.</p><a class="text-link light" href="/company">Meet the company <span aria-hidden="true">-></span></a></div><div class="about-preview-image" role="img" aria-label="People reviewing architectural plans"></div></section>
-      <section class="section locations-preview"><div class="section-heading"><p class="eyebrow">Where we are</p><h2>One office, close to the work.</h2></div><div class="location-mini-grid location-mini-grid-single"><a href="/locations"><strong>South Florida</strong><span>United States</span><span>Oakland Park, Broward County</span></a></div></section>
-      <section class="contact-strip"><div><p class="eyebrow">Contact</p><h2>Have a property or opportunity to discuss?</h2></div><a class="button primary" href="/contact">Get in touch <span aria-hidden="true">-></span></a></section>
-    </main>
-    <footer class="site-footer"><div class="footer-main"><div class="footer-brand"><img src="/assets/ponasa-logo.png" alt="Ponasa"><p>Ponasa LLC owns and manages real estate in Broward County, Florida.</p><a href="mailto:info@ponasa.com">info@ponasa.com</a></div><div class="footer-column"><h3>Explore</h3><a href="/portfolio">Tenants</a><a href="/portfolio">Portfolio</a><a href="/company">Company</a><a href="/locations">Locations</a></div><div class="footer-column"><h3>People</h3><a href="/portfolio">Tenant listings</a><a href="/contact">Contact</a><a href="/sitemap">Site map</a></div><div class="footer-column"><h3>Legal</h3><a href="/privacy-policy">Privacy policy</a><a href="/terms">Terms of use</a><a href="/accessibility">Accessibility</a></div></div><div class="footer-bottom"><span>Copyright &copy; 2026 Ponasa LLC</span><span>Website information is not an offer or investment advice.</span></div></footer>
-    <script src="/script.js"></script>
-  </body>
+      </div>
+    </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu"><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
+  </div>
+  <nav class="site-menu" id="site-menu" aria-label="Site menu">
+    <a href="/contact">Contact us</a>
+    <a href="/company">Company</a>
+    <a href="/investors">Investors</a>
+    <a href="/usa">USA</a>
+    <a href="/italy">Italy</a>
+    <a href="/colombia">Colombia</a>
+  </nav>
+</header>
+  <main>
+    <section class="hero hero-home">
+      <div class="hero-copy">
+        <p class="eyebrow">Ponasa</p>
+        <h1>Real estate, kept simple.</h1>
+        <p>We own and manage properties with a long view.</p>
+        <div class="hero-actions"><a class="button primary" href="/portfolio">Tenant listings</a><a
+            class="button secondary" href="/contact">Contact Ponasa</a></div>
+      </div>
+      <div class="hero-media" role="img" aria-label="Modern home with warm exterior lighting"></div>
+    </section>
+    <section class="market-strip" aria-label="Market watch">
+      </div>
+      <div class="market-window">
+        <div class="market-track" id="market-track" aria-live="polite"></div>
+      </div>
+      <button class="ticker-control" type="button" aria-label="Pause market ticker" aria-pressed="false">||</button>
+    </section>
+    <section class="feature-split">
+      <div class="feature-image" role="img" aria-label="Apartment building exterior"></div>
+      <div class="feature-content">
+        <p class="eyebrow">Portfolio</p>
+        <h2>Residential, commercial, and hospitality properties.</h2>
+        <p>A focused Broward County portfolio managed with a long view.</p><a class="text-link"
+          href="/portfolio">Explore the portfolio <span aria-hidden="true">-></span></a>
+      </div>
+    </section>
+    <section class="media-section development-section">
+      <div class="section-heading section-heading-row">
+        <div>
+          <p class="eyebrow">Local developments</p>
+          <h2>Broward County places people want to live.</h2>
+          <p>Explore the local amenities and development patterns that continue to attract residents.</p>
+        </div>
+        <div class="carousel-controls" aria-label="Local development carousel controls"><button class="carousel-button"
+            type="button" data-carousel-prev aria-label="Previous development">&#8592;</button><span
+            id="development-count">01 / 03</span><button class="carousel-button" type="button" data-carousel-next
+            aria-label="Next development">&#8594;</button></div>
+      </div>
+      <div class="development-carousel" data-carousel aria-label="Broward County development highlights">
+        <article class="development-slide development-slide-coastal is-active" data-slide="0"><a
+            class="development-slide-content" href="https://www.broward.org/BCT/PREMO" target="_blank"
+            rel="noopener"><span>01</span><strong>Oakland Park Boulevard transit</strong>
+            <p>Broward County plans a 15-mile rapid-transit corridor connecting A1A and Sawgrass Mills.</p>
+            <small>Project details -></small>
+          </a></article>
+        <article class="development-slide development-slide-urban" data-slide="1"><a class="development-slide-content"
+            href="https://www.fortlauderdale.gov/Government/Departments/Community-Redevelopment-Agency/Northwest-Progresso-Flagler-Heights-CRA/NPF-CRA-Redevelopment-Plan"
+            target="_blank" rel="noopener"><span>02</span><strong>Northwest-Progresso-Flagler Heights</strong>
+            <p>The 2025 plan supports mixed-income housing, small businesses, adaptive reuse, and public spaces.</p>
+            <small>Read the plan -></small>
+          </a></article>
+        <article class="development-slide development-slide-green" data-slide="2"><a class="development-slide-content"
+            href="https://www.broward.org/browardnext" target="_blank"
+            rel="noopener"><span>03</span><strong>BrowardNEXT</strong>
+            <p>The county land-use update addresses transportation, housing, climate, and redevelopment.</p>
+            <small>County update -></small>
+          </a></article>
+      </div>
+    </section>
+    <section class="about-preview">
+      <div>
+        <p class="eyebrow">About Ponasa</p>
+        <h2>Built through ownership experience.</h2>
+        <p>Ponasa began in 2004 in Southeast Florida and remains close to the properties and people it serves.</p><a
+          class="text-link light" href="/company">Meet the company <span aria-hidden="true">-></span></a>
+      </div>
+      <div class="about-preview-image" role="img" aria-label="People reviewing architectural plans"></div>
+    </section>
+    <section class="section locations-preview">
+      <div class="section-heading">
+        <p class="eyebrow">Where we are</p>
+        <h2>One office, close to the work.</h2>
+      </div>
+      <div class="location-mini-grid location-mini-grid-single"><a href="/locations"><strong>South
+            Florida</strong><span>United States</span><span>Oakland Park, Broward County</span></a></div>
+    </section>
+    <section class="contact-strip">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2>Have a property or opportunity to discuss?</h2>
+      </div><a class="button primary" href="/contact">Get in touch <span aria-hidden="true">-></span></a>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-main">
+      <div class="footer-brand"><img src="/assets/ponasa-logo.png" alt="Ponasa">
+        <p>Ponasa LLC owns and manages real estate in Broward County, Florida.</p><a
+          href="mailto:info@ponasa.com">info@ponasa.com</a>
+      </div>
+      <div class="footer-column">
+        <h3>Explore</h3><a href="/portfolio">Tenants</a><a href="/portfolio">Portfolio</a><a
+          href="/company">Company</a><a href="/locations">Locations</a>
+      </div>
+      <div class="footer-column">
+        <h3>People</h3><a href="/portfolio">Tenant listings</a><a href="/contact">Contact</a><a href="/sitemap">Site
+          map</a>
+      </div>
+      <div class="footer-column">
+        <h3>Legal</h3><a href="/privacy-policy">Privacy policy</a><a href="/terms">Terms of use</a><a
+          href="/accessibility">Accessibility</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>Copyright &copy; 2026 Ponasa LLC</span><span>Website information is not an offer or
+        investment advice.</span></div>
+  </footer>
+  <script src="/script.js"></script>
+</body>
+
 </html>

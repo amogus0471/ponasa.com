@@ -2,11 +2,35 @@
 <html lang="en">
   <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Site Map | Ponasa</title><meta name="description" content="Ponasa website sitemap with all property profiles."><link rel="icon" href="/assets/ponasa-favicon.png" type="image/png" sizes="any"><link rel="stylesheet" href="/styles.css"></head>
   <body>
-    <header class="site-header"><a class="brand" href="/" aria-label="Ponasa home"><img src="/assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button><nav class="site-nav" id="site-nav" aria-label="Primary navigation"><a href="/">Home</a><a href="/portfolio">Tenants</a><a href="/investors">Investors</a><div class="nav-dropdown"><button type="button" aria-expanded="false">Company</button><div class="dropdown-panel"><a href="/company">About Ponasa</a><a href="/locations">Office Locations</a></div></div><a href="/contact">Contact</a></nav></header>
+    <header class="site-header">
+  <a class="brand" href="/" aria-label="Ponasa home"><img src="/assets/ponasa-logo.png" alt="Ponasa Real Estate Investments and Management"></a>
+  <div class="header-actions">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="home-link" href="/">Home</a>
+      <div class="nav-dropdown language-dropdown">
+        <button class="language-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="language-symbol" aria-hidden="true">◎</span><span data-language-current>English</span></button>
+        <div class="dropdown-panel language-panel" role="menu" aria-label="Language">
+          <button type="button" role="menuitemradio" aria-checked="true" data-language-option="en">English</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-language-option="es">Spanish</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-language-option="it">Italian</button>
+        </div>
+      </div>
+    </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu"><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
+  </div>
+  <nav class="site-menu" id="site-menu" aria-label="Site menu">
+    <a href="/contact">Contact us</a>
+    <a href="/company">Company</a>
+    <a href="/investors">Investors</a>
+    <a href="/usa">USA</a>
+    <a href="/italy">Italy</a>
+    <a href="/colombia">Colombia</a>
+  </nav>
+</header>
     <main class="legal-page">
       <p class="eyebrow">Site map</p>
       <h1>All pages.</h1>
-      <section><h2>Main pages</h2><ul class="sitemap-list"><li><a href="/">Home</a></li><li><a href="/portfolio">Tenants and portfolio</a></li><li><a href="/company">Company</a></li><li><a href="/locations">Locations</a></li><li><a href="/contact">Contact</a></li></ul></section>
+      <section><h2>Main pages</h2><ul class="sitemap-list"><li><a href="/">Home</a></li><li><a href="/portfolio">Tenants and portfolio</a></li><li><a href="/company">Company</a></li><li><a href="/usa">USA properties</a></li><li><a href="/italy">Italy properties</a></li><li><a href="/colombia">Colombia properties</a></li><li><a href="/locations">Locations</a></li><li><a href="/contact">Contact</a></li></ul></section>
       <section><h2>Legal</h2><ul class="sitemap-list"><li><a href="/privacy-policy">Privacy policy</a></li><li><a href="/terms">Terms of use</a></li><li><a href="/accessibility">Accessibility</a></li></ul></section>
       <section><h2>Property profiles</h2><p>Browse every publicly indexed Ponasa property profile.</p><ul class="sitemap-list sitemap-property-list" id="property-sitemap-list"></ul></section>
     </main>

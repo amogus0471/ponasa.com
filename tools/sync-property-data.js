@@ -96,7 +96,7 @@ const main = async () => {
     .replace(/#/g, " unit ")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-  const staticPaths = ["/", "/portfolio", "/company", "/locations", "/contact", "/privacy-policy", "/terms", "/accessibility", "/sitemap"];
+  const staticPaths = ["/", "/portfolio", "/company", "/locations", "/contact", "/privacy-policy", "/terms", "/accessibility", "/sitemap", "/usa", "/italy", "/colombia"];
   const urls = [
     ...staticPaths,
     ...properties.map((property) => `/portfolio/${propertySlug(property)}`),
